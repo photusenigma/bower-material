@@ -44,5 +44,9 @@
   ],
   "bugs": {
     "url": "https://github.com/angular/material/issues"
+  }, 
+  "scripts": {
+    "watch-autocomplete": "gulp watch-demo -c autocomplete",
+    "start": "gulp server"
   }
 }
