@@ -1323,251 +1323,219 @@ md-autocomplete {
   }
 }
 
-// !!Important - Theme-based Background-color can be configured in backdrop-theme.scss
-//             - Animate background-color opacityy only for `.md-opaque` styles
+$card-padding: 16px !default;
+$card-box-shadow: $whiteframe-shadow-1dp !default;
 
-md-backdrop {
-  transition: opacity 450ms;
+md-card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  margin: $baseline-grid;
 
-  position: absolute;
-  top:0;
-  bottom:0;
-  left: 0;
-  right: 0;
+  box-shadow: $card-box-shadow;
 
-  z-index: $z-index-backdrop;
-
-  &.md-menu-backdrop {
-    position: fixed !important;
-    z-index: $z-index-menu - 1;
-  }
-  &.md-select-backdrop {
-    z-index: $z-index-dialog + 1;
-    transition-duration: 0;
-  }
-  &.md-dialog-backdrop {
-    z-index: $z-index-dialog - 1;
-  }
-  &.md-bottom-sheet-backdrop {
-    z-index: $z-index-bottom-sheet - 1;
-  }
-  &.md-sidenav-backdrop {
-    z-index: $z-index-sidenav - 1;
-  }
-
-
-  &.md-click-catcher {
-    position: absolute;
-  }
-
-  &.md-opaque {
-
-    opacity: .48;
-
-    &.ng-enter {
-      opacity: 0;
-    }
-    &.ng-enter.md-opaque.ng-enter-active {
-      opacity: .48;
-    }
-    &.ng-leave {
-      opacity: .48;
-      transition: opacity 400ms;
-    }
-    &.ng-leave.md-opaque.ng-leave-active {
-      opacity: 0;
-    }
-  }
-
-}
-
-
-$bottom-sheet-horizontal-padding: 2 * $baseline-grid !default;
-$bottom-sheet-vertical-padding: 1 * $baseline-grid !default;
-$bottom-sheet-icon-after-margin: 4 * $baseline-grid !default;
-$bottom-sheet-list-item-height: 6 * $baseline-grid !default;
-$bottom-sheet-hidden-bottom-padding: 80px !default;
-$bottom-sheet-header-height: 7 * $baseline-grid !default;
-$bottom-sheet-grid-font-weight: 400 !default;
-
-md-bottom-sheet {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: $bottom-sheet-vertical-padding $bottom-sheet-horizontal-padding $bottom-sheet-vertical-padding + $bottom-sheet-hidden-bottom-padding $bottom-sheet-horizontal-padding;
-  z-index: $z-index-bottom-sheet;
-
-  border-top-width: 1px;
-  border-top-style: solid;
-
-  transform: translate3d(0, $bottom-sheet-hidden-bottom-padding, 0);
-  transition: $swift-ease-out;
-  transition-property: transform;
-
-  &.md-has-header {
-    padding-top: 0;
-  }
-
-  &.ng-enter {
-    opacity: 0;
-    transform: translate3d(0, 100%, 0);
-  }
-
-  &.ng-enter-active {
-    opacity: 1;
-    display: block;
-    transform: translate3d(0, $bottom-sheet-hidden-bottom-padding, 0) !important;
-  }
-
-
-  &.ng-leave-active {
-    transform: translate3d(0, 100%, 0) !important;
-    transition: $swift-ease-in;
-  }
-
-  .md-subheader {
-    background-color: transparent;
-    font-family: $font-family;
-    line-height: $bottom-sheet-header-height;
-    padding: 0;
-    white-space: nowrap;
-  }
-
-  md-inline-icon {
-    display: inline-block;
-    height: 24px;
-    width: 24px;
-    fill: #444;
-  }
-
-  md-list-item {
+  md-card-header {
+    padding: $card-padding;
     display: flex;
-    outline: none;
+    flex-direction: row;
 
-    &:hover {
-      cursor: pointer;
-    }
-  }
-
-  &.md-list {
-    md-list-item {
-      padding: 0;
-      align-items: center;
-      height: $bottom-sheet-list-item-height;
-
-      div.md-icon-container {
-        display: inline-block;
-        height: 3 * $baseline-grid;
-        margin-right: $bottom-sheet-icon-after-margin;
+    &:first-child {
+      md-card-avatar {
+        margin-right: 12px;
       }
     }
-  }
 
-
-
-  &.md-grid {
-    padding-left: 3 * $baseline-grid;
-    padding-right: 3 * $baseline-grid;
-    padding-top: 0;
-
-    md-list {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      transition: all 0.5s;
-      align-items: center;
+    &:last-child {
+      md-card-avatar {
+        margin-left: 12px;
+      }
     }
 
-    md-list-item {
-      flex-direction: column;
-      align-items: center;
-      transition: all 0.5s;
+    md-card-avatar {
+      width: 40px;
+      height: 40px;
 
-      height: 12 * $baseline-grid;
+      .md-user-avatar,
+      md-icon{
+        border-radius: 50%;
+      }
 
-      margin-top: $baseline-grid;
-      margin-bottom: $baseline-grid;
+      md-icon {
+        padding: 8px;
+      }
 
-      /* Mixin for how many grid items to show per row */
-      @mixin grid-items-per-row($num, $alignEdges: false) {
-        $width: 100% / $num;
-        flex: 1 1 $width;
-        max-width: $width;
+      & + md-card-header-text {
+        max-height: 40px;
 
-        @if $alignEdges {
-          &:nth-of-type(#{$num}n + 1) {
-            align-items: flex-start;
-          }
-          &:nth-of-type(#{$num}n) {
-            align-items: flex-end;
-          }
+        .md-title {
+          font-size: 14px;
         }
       }
-      
-      @media screen and (max-width: $layout-breakpoint-sm) {
-        @include grid-items-per-row(3, true);
-      }
+    }
 
-      @media screen and (min-width: $layout-breakpoint-sm) and (max-width: $layout-breakpoint-md - 1) {
-        @include grid-items-per-row(4);
-      }
+    md-card-header-text {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
 
-      @media screen and (min-width: $layout-breakpoint-md) and (max-width: $layout-breakpoint-lg - 1) {
-        @include grid-items-per-row(6);
-      }
-
-      @media screen and (min-width: $layout-breakpoint-lg) {
-        @include grid-items-per-row(7);
-      }
-
-
-
-      .md-list-item-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 6 * $baseline-grid;
-        padding-bottom: 2 * $baseline-grid;
-      }
-
-      .md-grid-item-content {
-        border: 1px solid transparent;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 10 * $baseline-grid;
-      }
-
-      .md-icon-container {
-        display: inline-block;
-        box-sizing: border-box;
-        height: 6 * $baseline-grid;
-        width: 6 * $baseline-grid;
-        margin: 0 0;
-      }
-
-      .md-grid-text {
-        font-weight: $bottom-sheet-grid-font-weight;
-        line-height: 2 * $baseline-grid;
-        font-size: 2 * $baseline-grid - 3;
-        margin: 0;
-        white-space: nowrap;
-        width: 8 * $baseline-grid;
-        text-align: center;
-        text-transform: none;
-        padding-top: 1 * $baseline-grid;
+      .md-subhead {
+        font-size: 14px;
       }
     }
   }
+
+  > img,
+  > :not(md-card-content) img {
+    box-sizing: border-box;
+    display: flex;
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+  }
+
+  md-card-title {
+    padding: 3 * $card-padding / 2 $card-padding $card-padding;
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+
+    & + md-card-content {
+      padding-top: 0;
+    }
+
+    md-card-title-text {
+      flex: 1;
+      flex-direction: column;
+      display: flex;
+
+      .md-subhead {
+        padding-top: 0;
+        font-size: 14px;
+      }
+
+      &:only-child {
+        .md-subhead {
+          padding-top: 3 * $card-padding / 4;
+        }
+      }
+    }
+
+    md-card-title-media {
+      margin-top: - $card-padding / 2;
+
+      .md-media-sm {
+        height: 80px;
+        width: 80px;
+      }
+      .md-media-md {
+        height: 112px;
+        width: 112px;
+      }
+      .md-media-lg {
+        height: 152px;
+        width: 152px;
+      }
+    }
+  }
+
+  md-card-content {
+    display: block;
+    padding: $card-padding;
+
+    & > p {
+      &:first-child {
+        margin-top: 0;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .md-media-xl {
+      height: 240px;
+      width: 240px;
+    }
+  }
+
+  .md-actions, md-card-actions {
+    margin: $baseline-grid;
+
+    &.layout-column {
+      .md-button {
+        &:not(.md-icon-button) {
+          margin: $baseline-grid / 4 0;
+
+          &:first-of-type {
+            margin-top: 0;
+          }
+
+          &:last-of-type {
+            margin-bottom: 0;
+          }
+        }
+
+        &.md-icon-button {
+          margin-top: 3 * $baseline-grid / 4;
+          margin-bottom: 3 * $baseline-grid / 4;
+        }
+      }
+    }
+
+    md-card-icon-actions {
+      flex: 1;
+      justify-content: flex-start;
+      display: flex;
+      flex-direction: row;
+    }
+
+    &:not(.layout-column) .md-button {
+      &:not(.md-icon-button) {
+        margin: 0 $baseline-grid * .5;
+
+        &:first-of-type {
+          margin-left: 0;
+        }
+
+        &:last-of-type {
+          margin-right: 0;
+        }
+      }
+
+      &.md-icon-button {
+        margin-left: 3 * $baseline-grid / 4;
+        margin-right: 3 * $baseline-grid / 4;
+
+        &:first-of-type {
+          margin-left: 3 * $baseline-grid / 2;
+        }
+
+        &:last-of-type {
+          margin-right: 3 * $baseline-grid / 2;
+        }
+      }
+
+      & + md-card-icon-actions {
+        flex: 1;
+        justify-content: flex-end;
+        display: flex;
+        flex-direction: row;
+      }
+    }
+  }
+
+  md-card-footer {
+    margin-top: auto;
+    padding: $card-padding;
+  }
 }
 
-// IE only
 @media screen and (-ms-high-contrast: active) {
-  md-bottom-sheet {
+  md-card {
     border: 1px solid #fff;
   }
 }
+
 
 $button-border-radius: 3px !default;
 $button-fab-border-radius: 50% !default;
@@ -1803,220 +1771,6 @@ button.md-button::-moz-focus-inner {
   }
 }
 
-$card-padding: 16px !default;
-$card-box-shadow: $whiteframe-shadow-1dp !default;
-
-md-card {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  margin: $baseline-grid;
-
-  box-shadow: $card-box-shadow;
-
-  md-card-header {
-    padding: $card-padding;
-    display: flex;
-    flex-direction: row;
-
-    &:first-child {
-      md-card-avatar {
-        margin-right: 12px;
-      }
-    }
-
-    &:last-child {
-      md-card-avatar {
-        margin-left: 12px;
-      }
-    }
-
-    md-card-avatar {
-      width: 40px;
-      height: 40px;
-
-      .md-user-avatar,
-      md-icon{
-        border-radius: 50%;
-      }
-
-      md-icon {
-        padding: 8px;
-      }
-
-      & + md-card-header-text {
-        max-height: 40px;
-
-        .md-title {
-          font-size: 14px;
-        }
-      }
-    }
-
-    md-card-header-text {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-
-      .md-subhead {
-        font-size: 14px;
-      }
-    }
-  }
-
-  > img,
-  > :not(md-card-content) img {
-    box-sizing: border-box;
-    display: flex;
-    flex: 0 0 auto;
-    width: 100%;
-    height: auto;
-  }
-
-  md-card-title {
-    padding: 3 * $card-padding / 2 $card-padding $card-padding;
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-
-    & + md-card-content {
-      padding-top: 0;
-    }
-
-    md-card-title-text {
-      flex: 1;
-      flex-direction: column;
-      display: flex;
-
-      .md-subhead {
-        padding-top: 0;
-        font-size: 14px;
-      }
-
-      &:only-child {
-        .md-subhead {
-          padding-top: 3 * $card-padding / 4;
-        }
-      }
-    }
-
-    md-card-title-media {
-      margin-top: - $card-padding / 2;
-
-      .md-media-sm {
-        height: 80px;
-        width: 80px;
-      }
-      .md-media-md {
-        height: 112px;
-        width: 112px;
-      }
-      .md-media-lg {
-        height: 152px;
-        width: 152px;
-      }
-    }
-  }
-
-  md-card-content {
-    display: block;
-    padding: $card-padding;
-
-    & > p {
-      &:first-child {
-        margin-top: 0;
-      }
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    .md-media-xl {
-      height: 240px;
-      width: 240px;
-    }
-  }
-
-  .md-actions, md-card-actions {
-    margin: $baseline-grid;
-
-    &.layout-column {
-      .md-button {
-        &:not(.md-icon-button) {
-          margin: $baseline-grid / 4 0;
-
-          &:first-of-type {
-            margin-top: 0;
-          }
-
-          &:last-of-type {
-            margin-bottom: 0;
-          }
-        }
-
-        &.md-icon-button {
-          margin-top: 3 * $baseline-grid / 4;
-          margin-bottom: 3 * $baseline-grid / 4;
-        }
-      }
-    }
-
-    md-card-icon-actions {
-      flex: 1;
-      justify-content: flex-start;
-      display: flex;
-      flex-direction: row;
-    }
-
-    &:not(.layout-column) .md-button {
-      &:not(.md-icon-button) {
-        margin: 0 $baseline-grid * .5;
-
-        &:first-of-type {
-          margin-left: 0;
-        }
-
-        &:last-of-type {
-          margin-right: 0;
-        }
-      }
-
-      &.md-icon-button {
-        margin-left: 3 * $baseline-grid / 4;
-        margin-right: 3 * $baseline-grid / 4;
-
-        &:first-of-type {
-          margin-left: 3 * $baseline-grid / 2;
-        }
-
-        &:last-of-type {
-          margin-right: 3 * $baseline-grid / 2;
-        }
-      }
-
-      & + md-card-icon-actions {
-        flex: 1;
-        justify-content: flex-end;
-        display: flex;
-        flex-direction: row;
-      }
-    }
-  }
-
-  md-card-footer {
-    margin-top: auto;
-    padding: $card-padding;
-  }
-}
-
-@media screen and (-ms-high-contrast: active) {
-  md-card {
-    border: 1px solid #fff;
-  }
-}
-
-
 $checkbox-width: 20px !default;
 $checkbox-height: $checkbox-width !default;
 $checkbox-margin: 16px !default;
@@ -2174,229 +1928,250 @@ md-checkbox {
   }
 }
 
-$chip-font-size: rem(1.6) !default;
-$chip-height: rem(3.2) !default;
-$chip-padding: 0 rem(1.2) 0 rem(1.2) !default;
-$chip-input-padding: 0 !default;
-$chip-remove-padding-right: rem(2.2) !default;
-$chip-remove-line-height: rem(2.2) !default;
-$chip-margin: rem(0.8) rem(0.8) 0 0 !default;
-$chip-wrap-padding: 0 0 rem(0.8) rem(0.3) !default;
-$chip-delete-icon-size: rem(1.8) !default;
-$contact-chip-padding: 0 rem(2.5) 0 0 !default;
-$contact-chip-suggestion-image-height: rem(4.0) !default;
-$contact-chip-suggestion-margin: rem(0.8) !default;
-$contact-chip-name-width: rem(12) !default;
+$bottom-sheet-horizontal-padding: 2 * $baseline-grid !default;
+$bottom-sheet-vertical-padding: 1 * $baseline-grid !default;
+$bottom-sheet-icon-after-margin: 4 * $baseline-grid !default;
+$bottom-sheet-list-item-height: 6 * $baseline-grid !default;
+$bottom-sheet-hidden-bottom-padding: 80px !default;
+$bottom-sheet-header-height: 7 * $baseline-grid !default;
+$bottom-sheet-grid-font-weight: 400 !default;
 
-.md-contact-chips {
-  .md-chips {
-    .md-chip {
-      padding: $contact-chip-padding;
-      .md-contact-avatar {
-        float: left;
-        img {
-          height: $chip-height;
-          border-radius: $chip-height / 2;
-        }
-      }
-      .md-contact-name {
-        display: inline-block;
-        height: $chip-height;
-        margin-left: rem(0.8);
-      }
-    }
+md-bottom-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: $bottom-sheet-vertical-padding $bottom-sheet-horizontal-padding $bottom-sheet-vertical-padding + $bottom-sheet-hidden-bottom-padding $bottom-sheet-horizontal-padding;
+  z-index: $z-index-bottom-sheet;
+
+  border-top-width: 1px;
+  border-top-style: solid;
+
+  transform: translate3d(0, $bottom-sheet-hidden-bottom-padding, 0);
+  transition: $swift-ease-out;
+  transition-property: transform;
+
+  &.md-has-header {
+    padding-top: 0;
   }
-}
-.md-contact-suggestion {
-  height: ($contact-chip-suggestion-margin * 2) + $contact-chip-suggestion-image-height;
-  img {
-    height: $contact-chip-suggestion-image-height;
-    border-radius: $contact-chip-suggestion-image-height / 2;
-    margin-top: $contact-chip-suggestion-margin;
+
+  &.ng-enter {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
   }
-  .md-contact-name {
-    margin-left: $contact-chip-suggestion-margin;
-    width: $contact-chip-name-width;
+
+  &.ng-enter-active {
+    opacity: 1;
+    display: block;
+    transform: translate3d(0, $bottom-sheet-hidden-bottom-padding, 0) !important;
   }
-  .md-contact-name, .md-contact-email {
+
+
+  &.ng-leave-active {
+    transform: translate3d(0, 100%, 0) !important;
+    transition: $swift-ease-in;
+  }
+
+  .md-subheader {
+    background-color: transparent;
+    font-family: $font-family;
+    line-height: $bottom-sheet-header-height;
+    padding: 0;
+    white-space: nowrap;
+  }
+
+  md-inline-icon {
     display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    height: 24px;
+    width: 24px;
+    fill: #444;
   }
-}
-.md-contact-chips-suggestions li {
-  height: 100%;
-}
-.md-chips {
-  @include pie-clearfix();
 
-  display: block;
-  font-family: $font-family;
-  font-size: $chip-font-size;
-  padding: $chip-wrap-padding;
-  vertical-align: middle;
+  md-list-item {
+    display: flex;
+    outline: none;
 
-  &:not(.md-readonly) {
-    cursor: text;
-
-    .md-chip:not(.md-readonly) {
-      padding-right: $chip-remove-padding-right;
-
-      .md-chip-content {
-        padding-right:rem(0.4);
-      }
+    &:hover {
+      cursor: pointer;
     }
   }
 
-  .md-chip {
-    cursor: default;
-    border-radius: $chip-height / 2;
-    display: block;
-    height: $chip-height;
-    line-height: $chip-height;
-    margin: $chip-margin;
-    padding: $chip-padding;
-    float: left;
-    box-sizing: border-box;
-    max-width: 100%;
-    position: relative;
-
-    .md-chip-content {
-      display: block;
-      float: left;
-      white-space: nowrap;
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      &:focus {
-        outline: none;
-      }
-    }
-    .md-chip-remove-container {
-      position: absolute;
-      right: 0;
-      line-height: $chip-remove-line-height;
-    }
-    .md-chip-remove {
-      text-align: center;
-      width: $chip-height;
-      height: $chip-height;
-      min-width: 0;
+  &.md-list {
+    md-list-item {
       padding: 0;
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      margin: 0;
-      position: relative;
-      md-icon {
-        height: $chip-delete-icon-size;
-        width: $chip-delete-icon-size;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate3d(-50%, -50%, 0);
+      align-items: center;
+      height: $bottom-sheet-list-item-height;
+
+      div.md-icon-container {
+        display: inline-block;
+        height: 3 * $baseline-grid;
+        margin-right: $bottom-sheet-icon-after-margin;
       }
     }
   }
-  .md-chip-input-container {
-    display: block;
-    line-height: $chip-height;
-    margin: $chip-margin;
-    padding: $chip-input-padding;
-    float: left;
-    input {
-      &:not([type]),&[type="email"],&[type="number"],&[type="tel"],&[type="url"],&[type="text"] {
-        border: 0;
-        height: $chip-height;
-        line-height: $chip-height;
-        padding: 0;
-        &:focus {
-          outline: none;
+
+
+
+  &.md-grid {
+    padding-left: 3 * $baseline-grid;
+    padding-right: 3 * $baseline-grid;
+    padding-top: 0;
+
+    md-list {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      transition: all 0.5s;
+      align-items: center;
+    }
+
+    md-list-item {
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.5s;
+
+      height: 12 * $baseline-grid;
+
+      margin-top: $baseline-grid;
+      margin-bottom: $baseline-grid;
+
+      /* Mixin for how many grid items to show per row */
+      @mixin grid-items-per-row($num, $alignEdges: false) {
+        $width: 100% / $num;
+        flex: 1 1 $width;
+        max-width: $width;
+
+        @if $alignEdges {
+          &:nth-of-type(#{$num}n + 1) {
+            align-items: flex-start;
+          }
+          &:nth-of-type(#{$num}n) {
+            align-items: flex-end;
+          }
         }
       }
-    }
-    md-autocomplete, md-autocomplete-wrap {
-      background: transparent;
-      height: $chip-height;
-    }
-    md-autocomplete {
-      md-autocomplete-wrap {
-        box-shadow: none;
+      
+      @media screen and (max-width: $layout-breakpoint-sm) {
+        @include grid-items-per-row(3, true);
       }
-      input {
-        position: relative;
+
+      @media screen and (min-width: $layout-breakpoint-sm) and (max-width: $layout-breakpoint-md - 1) {
+        @include grid-items-per-row(4);
       }
-    }
-    input {
-      border:0;
-      height: $chip-height;
-      line-height: $chip-height;
-      padding: 0;
-      &:focus {
-        outline:none;
+
+      @media screen and (min-width: $layout-breakpoint-md) and (max-width: $layout-breakpoint-lg - 1) {
+        @include grid-items-per-row(6);
       }
-    }
-    md-autocomplete, md-autocomplete-wrap {
-      height: $chip-height;
-    }
-    md-autocomplete {
-      box-shadow: none;
-      input {
-        position: relative;
+
+      @media screen and (min-width: $layout-breakpoint-lg) {
+        @include grid-items-per-row(7);
       }
-    }
-    &:not(:first-child) {
-      margin: $chip-margin;
-    }
-    input {
-      background:transparent;
-      border-width: 0;
-    }
-  }
-  md-autocomplete {
-    button {
-      display: none;
+
+
+
+      .md-list-item-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 6 * $baseline-grid;
+        padding-bottom: 2 * $baseline-grid;
+      }
+
+      .md-grid-item-content {
+        border: 1px solid transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 10 * $baseline-grid;
+      }
+
+      .md-icon-container {
+        display: inline-block;
+        box-sizing: border-box;
+        height: 6 * $baseline-grid;
+        width: 6 * $baseline-grid;
+        margin: 0 0;
+      }
+
+      .md-grid-text {
+        font-weight: $bottom-sheet-grid-font-weight;
+        line-height: 2 * $baseline-grid;
+        font-size: 2 * $baseline-grid - 3;
+        margin: 0;
+        white-space: nowrap;
+        width: 8 * $baseline-grid;
+        text-align: center;
+        text-transform: none;
+        padding-top: 1 * $baseline-grid;
+      }
     }
   }
 }
+
 // IE only
 @media screen and (-ms-high-contrast: active) {
-  .md-chip-input-container,
-  md-chip {
+  md-bottom-sheet {
     border: 1px solid #fff;
   }
-  .md-chip-input-container md-autocomplete {
-    border: none;
-  }
 }
 
+// !!Important - Theme-based Background-color can be configured in backdrop-theme.scss
+//             - Animate background-color opacityy only for `.md-opaque` styles
 
-md-content {
+md-backdrop {
+  transition: opacity 450ms;
 
-  display: block;
-  position: relative;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
+  position: absolute;
+  top:0;
+  bottom:0;
+  left: 0;
+  right: 0;
 
-  &[md-scroll-y] {
-    overflow-y: auto;
-    overflow-x: hidden;
+  z-index: $z-index-backdrop;
+
+  &.md-menu-backdrop {
+    position: fixed !important;
+    z-index: $z-index-menu - 1;
   }
-  &[md-scroll-x] {
-    overflow-x: auto;
-    overflow-y: hidden;
+  &.md-select-backdrop {
+    z-index: $z-index-dialog + 1;
+    transition-duration: 0;
   }
-  &[md-scroll-xy] {
+  &.md-dialog-backdrop {
+    z-index: $z-index-dialog - 1;
+  }
+  &.md-bottom-sheet-backdrop {
+    z-index: $z-index-bottom-sheet - 1;
+  }
+  &.md-sidenav-backdrop {
+    z-index: $z-index-sidenav - 1;
   }
 
-  // For iOS allow disabling of momentum scrolling
-  // @see issue #2640.
 
-  &.autoScroll {
-    -webkit-overflow-scrolling: auto;
+  &.md-click-catcher {
+    position: absolute;
   }
+
+  &.md-opaque {
+
+    opacity: .48;
+
+    &.ng-enter {
+      opacity: 0;
+    }
+    &.ng-enter.md-opaque.ng-enter-active {
+      opacity: .48;
+    }
+    &.ng-leave {
+      opacity: .48;
+      transition: opacity 400ms;
+    }
+    &.ng-leave.md-opaque.ng-leave-active {
+      opacity: 0;
+    }
+  }
+
 }
-
 
 
 /** Styles for mdCalendar. */
@@ -2755,6 +2530,203 @@ md-datepicker[disabled] {
   }
 }
 
+$chip-font-size: rem(1.6) !default;
+$chip-height: rem(3.2) !default;
+$chip-padding: 0 rem(1.2) 0 rem(1.2) !default;
+$chip-input-padding: 0 !default;
+$chip-remove-padding-right: rem(2.2) !default;
+$chip-remove-line-height: rem(2.2) !default;
+$chip-margin: rem(0.8) rem(0.8) 0 0 !default;
+$chip-wrap-padding: 0 0 rem(0.8) rem(0.3) !default;
+$chip-delete-icon-size: rem(1.8) !default;
+$contact-chip-padding: 0 rem(2.5) 0 0 !default;
+$contact-chip-suggestion-image-height: rem(4.0) !default;
+$contact-chip-suggestion-margin: rem(0.8) !default;
+$contact-chip-name-width: rem(12) !default;
+
+.md-contact-chips {
+  .md-chips {
+    .md-chip {
+      padding: $contact-chip-padding;
+      .md-contact-avatar {
+        float: left;
+        img {
+          height: $chip-height;
+          border-radius: $chip-height / 2;
+        }
+      }
+      .md-contact-name {
+        display: inline-block;
+        height: $chip-height;
+        margin-left: rem(0.8);
+      }
+    }
+  }
+}
+.md-contact-suggestion {
+  height: ($contact-chip-suggestion-margin * 2) + $contact-chip-suggestion-image-height;
+  img {
+    height: $contact-chip-suggestion-image-height;
+    border-radius: $contact-chip-suggestion-image-height / 2;
+    margin-top: $contact-chip-suggestion-margin;
+  }
+  .md-contact-name {
+    margin-left: $contact-chip-suggestion-margin;
+    width: $contact-chip-name-width;
+  }
+  .md-contact-name, .md-contact-email {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+.md-contact-chips-suggestions li {
+  height: 100%;
+}
+.md-chips {
+  @include pie-clearfix();
+
+  display: block;
+  font-family: $font-family;
+  font-size: $chip-font-size;
+  padding: $chip-wrap-padding;
+  vertical-align: middle;
+
+  &:not(.md-readonly) {
+    cursor: text;
+
+    .md-chip:not(.md-readonly) {
+      padding-right: $chip-remove-padding-right;
+
+      .md-chip-content {
+        padding-right:rem(0.4);
+      }
+    }
+  }
+
+  .md-chip {
+    cursor: default;
+    border-radius: $chip-height / 2;
+    display: block;
+    height: $chip-height;
+    line-height: $chip-height;
+    margin: $chip-margin;
+    padding: $chip-padding;
+    float: left;
+    box-sizing: border-box;
+    max-width: 100%;
+    position: relative;
+
+    .md-chip-content {
+      display: block;
+      float: left;
+      white-space: nowrap;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      &:focus {
+        outline: none;
+      }
+    }
+    .md-chip-remove-container {
+      position: absolute;
+      right: 0;
+      line-height: $chip-remove-line-height;
+    }
+    .md-chip-remove {
+      text-align: center;
+      width: $chip-height;
+      height: $chip-height;
+      min-width: 0;
+      padding: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      margin: 0;
+      position: relative;
+      md-icon {
+        height: $chip-delete-icon-size;
+        width: $chip-delete-icon-size;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate3d(-50%, -50%, 0);
+      }
+    }
+  }
+  .md-chip-input-container {
+    display: block;
+    line-height: $chip-height;
+    margin: $chip-margin;
+    padding: $chip-input-padding;
+    float: left;
+    input {
+      &:not([type]),&[type="email"],&[type="number"],&[type="tel"],&[type="url"],&[type="text"] {
+        border: 0;
+        height: $chip-height;
+        line-height: $chip-height;
+        padding: 0;
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+    md-autocomplete, md-autocomplete-wrap {
+      background: transparent;
+      height: $chip-height;
+    }
+    md-autocomplete {
+      md-autocomplete-wrap {
+        box-shadow: none;
+      }
+      input {
+        position: relative;
+      }
+    }
+    input {
+      border:0;
+      height: $chip-height;
+      line-height: $chip-height;
+      padding: 0;
+      &:focus {
+        outline:none;
+      }
+    }
+    md-autocomplete, md-autocomplete-wrap {
+      height: $chip-height;
+    }
+    md-autocomplete {
+      box-shadow: none;
+      input {
+        position: relative;
+      }
+    }
+    &:not(:first-child) {
+      margin: $chip-margin;
+    }
+    input {
+      background:transparent;
+      border-width: 0;
+    }
+  }
+  md-autocomplete {
+    button {
+      display: none;
+    }
+  }
+}
+// IE only
+@media screen and (-ms-high-contrast: active) {
+  .md-chip-input-container,
+  md-chip {
+    border: 1px solid #fff;
+  }
+  .md-chip-input-container md-autocomplete {
+    border: none;
+  }
+}
+
+
 $dialog-padding: $baseline-grid * 3;
 
 .md-dialog-is-showing {
@@ -2885,24 +2857,34 @@ md-dialog {
   }
 }
 
-md-divider {
+md-content {
+
   display: block;
-  border-top-width: 1px;
-  border-top-style: solid;
-  margin: 0;
+  position: relative;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 
-  &[md-inset] {
-    margin-left: $baseline-grid * 10;
+  &[md-scroll-y] {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  &[md-scroll-x] {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  &[md-scroll-xy] {
+  }
+
+  // For iOS allow disabling of momentum scrolling
+  // @see issue #2640.
+
+  &.autoScroll {
+    -webkit-overflow-scrolling: auto;
   }
 }
 
-.layout-row {
-  & > md-divider {
-    border-top-width: 0;
-    border-right-width: 1px;
-    border-right-style: solid;
-  }
-}
+
+
 md-fab-speed-dial {
   position: relative;
   display: flex;
@@ -3048,6 +3030,106 @@ md-fab-speed-dial {
   }
 }
 
+md-divider {
+  display: block;
+  border-top-width: 1px;
+  border-top-style: solid;
+  margin: 0;
+
+  &[md-inset] {
+    margin-left: $baseline-grid * 10;
+  }
+}
+
+.layout-row {
+  & > md-divider {
+    border-top-width: 0;
+    border-right-width: 1px;
+    border-right-style: solid;
+  }
+}
+md-grid-list {
+  box-sizing: border-box;
+  display: block;
+  position: relative;
+
+  md-grid-tile,
+  md-grid-tile > figure,
+  md-grid-tile-header,
+  md-grid-tile-footer {
+    box-sizing: border-box;
+  }
+
+  md-grid-tile {
+    display: block;
+    position: absolute;
+
+    figure {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      padding: 0;
+      margin: 0;
+    }
+
+    // Headers & footers
+    md-grid-tile-header,
+    md-grid-tile-footer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 48px;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.18);
+      overflow: hidden;
+
+      // Positioning
+      position: absolute;
+      left: 0;
+      right: 0;
+
+      h3,
+      h4 {
+        font-weight: 400;
+        margin: 0 0 0 16px;
+      }
+
+      h3 {
+        font-size: 14px;
+      }
+
+      h4 {
+        font-size: 12px;
+      }
+    }
+
+    md-grid-tile-header {
+      top: 0;
+    }
+
+    md-grid-tile-footer {
+      bottom: 0;
+    }
+  }
+
+}
+
+@media screen and (-ms-high-contrast: active) {
+  md-grid-tile {
+    border: 1px solid #fff;
+  }
+  md-grid-tile-footer {
+    border-top: 1px solid #fff;
+  }
+}
+
+
 $button-fab-width: rem(5.600) !default;
 $icon-button-margin: rem(0.600) !default;
 
@@ -3172,143 +3254,6 @@ md-fab-toolbar {
     }
   }
 }
-md-grid-list {
-  box-sizing: border-box;
-  display: block;
-  position: relative;
-
-  md-grid-tile,
-  md-grid-tile > figure,
-  md-grid-tile-header,
-  md-grid-tile-footer {
-    box-sizing: border-box;
-  }
-
-  md-grid-tile {
-    display: block;
-    position: absolute;
-
-    figure {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      padding: 0;
-      margin: 0;
-    }
-
-    // Headers & footers
-    md-grid-tile-header,
-    md-grid-tile-footer {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      height: 48px;
-      color: #fff;
-      background: rgba(0, 0, 0, 0.18);
-      overflow: hidden;
-
-      // Positioning
-      position: absolute;
-      left: 0;
-      right: 0;
-
-      h3,
-      h4 {
-        font-weight: 400;
-        margin: 0 0 0 16px;
-      }
-
-      h3 {
-        font-size: 14px;
-      }
-
-      h4 {
-        font-size: 12px;
-      }
-    }
-
-    md-grid-tile-header {
-      top: 0;
-    }
-
-    md-grid-tile-footer {
-      bottom: 0;
-    }
-  }
-
-}
-
-@media screen and (-ms-high-contrast: active) {
-  md-grid-tile {
-    border: 1px solid #fff;
-  }
-  md-grid-tile-footer {
-    border-top: 1px solid #fff;
-  }
-}
-
-
-md-icon {
-  margin: auto;
-  background-repeat: no-repeat no-repeat;
-  display: inline-block;
-  vertical-align: middle;
-  fill: currentColor;
-  height: $icon-size;
-  width: $icon-size;
-
-  svg {
-    pointer-events: none;
-  }
-
-  &[md-font-icon] {
-    line-height: 1;
-    width: auto;
-  }
-}
-
-//
-//@font-face {
-//  font-family:"material";
-//  src:url("/dist/material-font/material.eot");
-//  font-weight:normal;
-//  font-style:normal;
-//}
-//
-//@font-face {
-//  font-family:"material";
-//  src:url("/dist/material-font/material.eot");
-//  src:url("/dist/material-font/material.eot?#iefix") format("embedded-opentype"),
-//    url("/dist/material-font/material.woff") format("woff"),
-//    url("/dist/material-font/material.ttf") format("truetype"),
-//    url("/dist/material-font/material.svg?#material") format("svg");
-//  font-weight:normal;
-//  font-style:normal;
-//}
-//
-///* Bootstrap Overrides */
-//[class^="icon-"]:before,
-//[class*=" icon-"]:before {
-//  font-family:"material";
-//  display:inline-block;
-//  vertical-align:middle;
-//  line-height:1;
-//  font-weight:normal;
-//  font-style:normal;
-//  speak:none;
-//  text-decoration:inherit;
-//  text-transform:none;
-//  text-rendering:optimizeLegibility;
-//  -webkit-font-smoothing:antialiased;
-//  -moz-osx-font-smoothing:grayscale;
-//}
-
 $input-container-padding: 2px !default;
 
 $input-label-default-offset: 24px !default;
@@ -3933,253 +3878,60 @@ md-list-item.md-3-line > .md-no-style {
   }
 }
 
-$menu-border-radius: 2px;
-$max-visible-items: 6;
-$menu-item-height: 6 * $baseline-grid;
-$dense-menu-item-height: 4 * $baseline-grid;
-$max-menu-height: 2 * $baseline-grid + $max-visible-items * $menu-item-height;
-$max-dense-menu-height: 2 * $baseline-grid + $max-visible-items * $dense-menu-item-height;
+md-icon {
+  margin: auto;
+  background-repeat: no-repeat no-repeat;
+  display: inline-block;
+  vertical-align: middle;
+  fill: currentColor;
+  height: $icon-size;
+  width: $icon-size;
 
-.md-open-menu-container {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: $z-index-menu;
-  opacity: 0;
-  border-radius: $menu-border-radius;
-
-  md-menu-divider {
-    margin-top: $baseline-grid / 2;
-    margin-bottom: $baseline-grid / 2;
-    height: 1px;
-    min-height: 1px;
-    max-height: 1px;
-    width: 100%;
-  }
-
-  md-menu-content > * {
-    opacity: 0;
-  }
-
-  // Don't let the user click something until it's animated
-  &:not(.md-clickable) {
+  svg {
     pointer-events: none;
   }
 
-  // enter: menu scales in, then list fade in.
-  &.md-active {
-    opacity: 1;
-    transition: $swift-ease-out;
-    transition-duration: 200ms;
-    > md-menu-content > * {
-      opacity: 1;
-      transition: $swift-ease-in;
-      transition-duration: 200ms;
-      transition-delay: 100ms;
-    }
-  }
-  // leave: the container fades out
-  &.md-leave {
-    opacity: 0;
-    transition: $swift-ease-in;
-    transition-duration: 250ms;
+  &[md-font-icon] {
+    line-height: 1;
+    width: auto;
   }
 }
 
-md-menu-content {
-  display: flex;
-  flex-direction: column;
-  padding: $baseline-grid 0;
-  max-height: $max-menu-height;
-  overflow-y: auto;
-  &.md-dense {
-    max-height: $max-dense-menu-height;
-    md-menu-item {
-      height: $dense-menu-item-height;
-      min-height: 0px;
-    }
-  }
-}
-
-md-menu-item {
-  display: flex;
-  flex-direction: row;
-  min-height: $menu-item-height;
-  height: $menu-item-height;
-  align-content: center;
-  justify-content: flex-start;
-
-  > * {
-    width: 100%;
-    margin: auto 0;
-    padding-left: 2*$baseline-grid;
-    padding-right: 2*$baseline-grid;
-  }
-
-  > a.md-button {
-    display: flex;
-  }
-
-  > .md-button {
-    border-radius: 0;
-    margin: auto 0;
-    font-size: (2*$baseline-grid) - 1;
-    text-transform: none;
-    font-weight: 400;
-    text-align: left;
-    text-align: start;
-    height: 100%;
-    padding-left: 2*$baseline-grid;
-    padding-right: 2*$baseline-grid;
-    display: inline-block;
-    align-items: baseline;
-    align-content: flex-start;
-    width:100%;
-    md-icon {
-      margin: auto 2*$baseline-grid auto 0;
-    }
-    p {
-      display:inline-block;
-      margin: auto;
-    }
-    span {
-      margin-top: auto;
-      margin-bottom: auto;
-    }
-    .md-ripple-container {
-      border-radius: inherit;
-    }
-  }
-}
-
-.md-menu {
-  padding: $baseline-grid 0;
-}
-
-md-toolbar {
-  .md-menu {
-    height: auto;
-    margin: auto;
-    padding: 0;
-  }
-}
-
-@media (max-width: $layout-breakpoint-sm - 1) {
-  md-menu-content {
-    min-width: 112px;
-  }
-  @for $i from 3 through 7 {
-    md-menu-content[width="#{$i}"] {
-      min-width: $i * 56px;
-    }
-  }
-}
-
-@media (min-width: $layout-breakpoint-sm) {
-  md-menu-content {
-    min-width: 96px;
-  }
-  @for $i from 3 through 7 {
-    md-menu-content[width="#{$i}"] {
-      min-width: $i * 64px;
-    }
-  }
-}
-
-
-md-toolbar.md-menu-toolbar {
-  h2.md-toolbar-tools {
-    line-height: 1rem;
-    height: auto;
-    padding: 3.5 * $baseline-grid;
-    padding-bottom: 1.5 * $baseline-grid;
-  }
-}
-
-md-menu-bar {
-  padding: 0 2.5 * $baseline-grid;
-  display: block;
-  position: relative;
-  z-index: 2;
-  .md-menu {
-    display: inline-block;
-    padding: 0;
-    position: relative;
-  }
-  button {
-    font-size: rem(1.4);
-    padding: 0 1.25 * $baseline-grid;
-    margin: 0;
-    border: 0;
-    background-color: transparent;
-    height: 5 * $baseline-grid;
-  }
-
-  md-backdrop.md-menu-backdrop {
-    z-index: -2;
-  }
-}
-
-md-menu-content.md-menu-bar-menu.md-dense {
-  max-height: none;
-  padding: 2 * $baseline-grid 0;
-  md-menu-item.md-indent {
-    position: relative;
-    > md-icon {
-      position: absolute;
-      padding: 0;
-      width: 24px;
-      top: 0.75 * $baseline-grid;
-      left: 3 * $baseline-grid;
-    }
-    > .md-button, .md-menu > .md-button {
-      padding: 0 4 * $baseline-grid 0 8 * $baseline-grid;
-    }
-  }
-  .md-button {
-    min-height: 0;
-    height: 4 * $baseline-grid;
-    display: flex;
-    span {
-      flex-grow: 1;
-    }
-    span.md-alt-text {
-      flex-grow: 0;
-      align-self: flex-end;
-      margin: 0 $baseline-grid;
-    }
-  }
-  md-menu-divider {
-    margin: $baseline-grid 0;
-  }
-
-  md-menu-item > .md-button, .md-menu > .md-button {
-    text-align: left;
-    text-align: start;
-  }
-
-  .md-menu {
-    padding: 0;
-    > .md-button {
-      position: relative;
-      margin: 0;
-      width: 100%;
-      text-transform: none;
-      font-weight: normal;
-      border-radius: 0px;
-      padding-left: 2 * $baseline-grid;
-      &:after {
-        display: block;
-        content: '\25BC';
-        position: absolute;
-        top: 0px;
-        speak: none;
-        transform: rotate(270deg) scaleY(0.45) scaleX(0.9);
-        right: 3.5 * $baseline-grid;
-      }
-    }
-  }
-}
+//
+//@font-face {
+//  font-family:"material";
+//  src:url("/dist/material-font/material.eot");
+//  font-weight:normal;
+//  font-style:normal;
+//}
+//
+//@font-face {
+//  font-family:"material";
+//  src:url("/dist/material-font/material.eot");
+//  src:url("/dist/material-font/material.eot?#iefix") format("embedded-opentype"),
+//    url("/dist/material-font/material.woff") format("woff"),
+//    url("/dist/material-font/material.ttf") format("truetype"),
+//    url("/dist/material-font/material.svg?#material") format("svg");
+//  font-weight:normal;
+//  font-style:normal;
+//}
+//
+///* Bootstrap Overrides */
+//[class^="icon-"]:before,
+//[class*=" icon-"]:before {
+//  font-family:"material";
+//  display:inline-block;
+//  vertical-align:middle;
+//  line-height:1;
+//  font-weight:normal;
+//  font-style:normal;
+//  speak:none;
+//  text-decoration:inherit;
+//  text-transform:none;
+//  text-rendering:optimizeLegibility;
+//  -webkit-font-smoothing:antialiased;
+//  -moz-osx-font-smoothing:grayscale;
+//}
 
 $progress-circular-ease-in-out : cubic-bezier(0.35, 0, 0.25, 1) !default;
 $progress-circular-duration : 5.25s !default;
@@ -4722,48 +4474,145 @@ md-radio-group {
   }
 }
 
-$select-option-height: 48px;
-$select-option-padding: 16px;
-$select-container-padding: 16px;
-$select-container-transition-duration: 350ms;
+md-toolbar.md-menu-toolbar {
+  h2.md-toolbar-tools {
+    line-height: 1rem;
+    height: auto;
+    padding: 3.5 * $baseline-grid;
+    padding-bottom: 1.5 * $baseline-grid;
+  }
+}
 
-$select-max-visible-options: 5;
+md-menu-bar {
+  padding: 0 2.5 * $baseline-grid;
+  display: block;
+  position: relative;
+  z-index: 2;
+  .md-menu {
+    display: inline-block;
+    padding: 0;
+    position: relative;
+  }
+  button {
+    font-size: rem(1.4);
+    padding: 0 1.25 * $baseline-grid;
+    margin: 0;
+    border: 0;
+    background-color: transparent;
+    height: 5 * $baseline-grid;
+  }
 
-.md-select-menu-container {
+  md-backdrop.md-menu-backdrop {
+    z-index: -2;
+  }
+}
+
+md-menu-content.md-menu-bar-menu.md-dense {
+  max-height: none;
+  padding: 2 * $baseline-grid 0;
+  md-menu-item.md-indent {
+    position: relative;
+    > md-icon {
+      position: absolute;
+      padding: 0;
+      width: 24px;
+      top: 0.75 * $baseline-grid;
+      left: 3 * $baseline-grid;
+    }
+    > .md-button, .md-menu > .md-button {
+      padding: 0 4 * $baseline-grid 0 8 * $baseline-grid;
+    }
+  }
+  .md-button {
+    min-height: 0;
+    height: 4 * $baseline-grid;
+    display: flex;
+    span {
+      flex-grow: 1;
+    }
+    span.md-alt-text {
+      flex-grow: 0;
+      align-self: flex-end;
+      margin: 0 $baseline-grid;
+    }
+  }
+  md-menu-divider {
+    margin: $baseline-grid 0;
+  }
+
+  md-menu-item > .md-button, .md-menu > .md-button {
+    text-align: left;
+    text-align: start;
+  }
+
+  .md-menu {
+    padding: 0;
+    > .md-button {
+      position: relative;
+      margin: 0;
+      width: 100%;
+      text-transform: none;
+      font-weight: normal;
+      border-radius: 0px;
+      padding-left: 2 * $baseline-grid;
+      &:after {
+        display: block;
+        content: '\25BC';
+        position: absolute;
+        top: 0px;
+        speak: none;
+        transform: rotate(270deg) scaleY(0.45) scaleX(0.9);
+        right: 3.5 * $baseline-grid;
+      }
+    }
+  }
+}
+
+$menu-border-radius: 2px;
+$max-visible-items: 6;
+$menu-item-height: 6 * $baseline-grid;
+$dense-menu-item-height: 4 * $baseline-grid;
+$max-menu-height: 2 * $baseline-grid + $max-visible-items * $menu-item-height;
+$max-dense-menu-height: 2 * $baseline-grid + $max-visible-items * $dense-menu-item-height;
+
+.md-open-menu-container {
   position: fixed;
   left: 0;
   top: 0;
-  z-index: $z-index-select;
+  z-index: $z-index-menu;
   opacity: 0;
-  display: none;
+  border-radius: $menu-border-radius;
 
-  // Don't let the user select a new choice while it's animating
+  md-menu-divider {
+    margin-top: $baseline-grid / 2;
+    margin-bottom: $baseline-grid / 2;
+    height: 1px;
+    min-height: 1px;
+    max-height: 1px;
+    width: 100%;
+  }
+
+  md-menu-content > * {
+    opacity: 0;
+  }
+
+  // Don't let the user click something until it's animated
   &:not(.md-clickable) {
     pointer-events: none;
   }
 
-  md-progress-circular {
-    display: table;
-    margin: 3*$baseline-grid auto !important;
-  }
-
-
-  // enter: md-select scales in, then options fade in.
+  // enter: menu scales in, then list fade in.
   &.md-active {
-    display: block;
     opacity: 1;
-    md-select-menu {
-      transition: $swift-ease-out;
-      transition-duration: 150ms;
-      > * {
-        opacity: 1;
-        transition: $swift-ease-in;
-        transition-duration: 150ms;
-        transition-delay: 100ms;
-      }
+    transition: $swift-ease-out;
+    transition-duration: 200ms;
+    > md-menu-content > * {
+      opacity: 1;
+      transition: $swift-ease-in;
+      transition-duration: 200ms;
+      transition-delay: 100ms;
     }
   }
-
   // leave: the container fades out
   &.md-leave {
     opacity: 0;
@@ -4772,186 +4621,106 @@ $select-max-visible-options: 5;
   }
 }
 
-md-input-container > md-select {
-  margin: 0;
-  order: 2;
-}
-
-md-select {
-  display: flex;
-  margin: 2.5*$baseline-grid 0 3*$baseline-grid + 2 0;
-  &[disabled] .md-select-value {
-    background-position: 0 bottom;
-    // This background-size is coordinated with a linear-gradient set in select-theme.scss
-    // to create a dotted line under the input.
-    background-size: 4px 1px;
-    background-repeat: repeat-x;
-    margin-bottom: -1px; // Shift downward so dotted line is positioned the same as other bottom borders
-  }
-  &:focus {
-    outline: none;
-  }
-  &[disabled]:hover {
-    cursor: default;
-  }
-  &:not([disabled]) {
-    &:hover {
-      cursor: pointer
-    }
-    &.ng-invalid.ng-dirty {
-      .md-select-value {
-        border-bottom: 2px solid;
-        padding-bottom: 0;
-      }
-    }
-    &:focus {
-      .md-select-value {
-        border-bottom-width: 2px;
-        border-bottom-style: solid;
-        padding-bottom: 0;
-      }
-    }
-  }
-}
-
-
-.md-select-value {
-  display: flex;
-  align-items: center;
-  padding: 2px 2px 1px;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  background-color: rgba(0,0,0,0);
-  position: relative;
-  box-sizing: content-box;
-  min-width: 8 * $baseline-grid;
-  min-height: 26px;
-  flex-grow: 1;
-
-  .md-text {
-    display: inline;
-  }
-
-  *:first-child {
-    flex: 1 0 auto;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    transform: translate3d(0, 2px, 0);
-  }
-
-  .md-select-icon {
-    display: block;
-    align-items: flex-end;
-    text-align: end;
-    width: 3 * $baseline-grid;
-    margin: 0 .5 * $baseline-grid;
-    transform: translate3d(0, 1px, 0);
-  }
-
-  .md-select-icon:after {
-    display: block;
-    content: '\25BC';
-    position: relative;
-    top: 2px;
-    speak: none;
-    transform: scaleY(0.6) scaleX(1);
-  }
-
-  &.md-select-placeholder {
-    display: flex;
-    order: 1;
-    pointer-events: none;
-    -webkit-font-smoothing: antialiased;
-    padding-left: 2px;
-    z-index: 1;
-  }
-}
-
-md-select-menu {
+md-menu-content {
   display: flex;
   flex-direction: column;
-  &.md-reverse {
-    flex-direction: column-reverse;
-  }
-
-  &:not(.md-overflow) {
-    md-content {
-      padding-top: $baseline-grid;
-      padding-bottom: $baseline-grid;
+  padding: $baseline-grid 0;
+  max-height: $max-menu-height;
+  overflow-y: auto;
+  &.md-dense {
+    max-height: $max-dense-menu-height;
+    md-menu-item {
+      height: $dense-menu-item-height;
+      min-height: 0px;
     }
   }
-
-  box-shadow: $whiteframe-shadow-1dp;
-  max-height: ($select-option-height * $select-max-visible-options) + 2 * $baseline-grid;
-  min-height: $select-option-height;
-  overflow-y: hidden;
-
-  @include rtl(transform-origin, left top, right top);
-
-  transform: scale(1.0);
-
-  md-content {
-    min-width: 136px;
-    min-height: $select-option-height;
-    max-height: ($select-option-height * $select-max-visible-options) + 2 * $baseline-grid;
-    overflow-y: auto;
-  }
-  > * {
-    opacity: 0;
-  }
 }
 
-md-option {
-  cursor: pointer;
-  position: relative;
+md-menu-item {
   display: flex;
-  align-items: center;
-  width: auto;
+  flex-direction: row;
+  min-height: $menu-item-height;
+  height: $menu-item-height;
+  align-content: center;
+  justify-content: flex-start;
 
-  &[disabled] {
-    cursor: default;
+  > * {
+    width: 100%;
+    margin: auto 0;
+    padding-left: 2*$baseline-grid;
+    padding-right: 2*$baseline-grid;
   }
 
-  &:focus {
-    outline: none;
+  > a.md-button {
+    display: flex;
   }
 
-  .md-text {
-    @include not-selectable();
-    width: auto;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: rem(1.6);
+  > .md-button {
+    border-radius: 0;
+    margin: auto 0;
+    font-size: (2*$baseline-grid) - 1;
+    text-transform: none;
+    font-weight: 400;
+    text-align: left;
+    text-align: start;
+    height: 100%;
+    padding-left: 2*$baseline-grid;
+    padding-right: 2*$baseline-grid;
+    display: inline-block;
+    align-items: baseline;
+    align-content: flex-start;
+    width:100%;
+    md-icon {
+      margin: auto 2*$baseline-grid auto 0;
+    }
+    p {
+      display:inline-block;
+      margin: auto;
+    }
+    span {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+    .md-ripple-container {
+      border-radius: inherit;
+    }
   }
-  padding: 0 $select-option-padding 0 $select-option-padding;
-  height: $select-option-height;
 }
 
-md-optgroup {
-  display: block;
-  label {
-    display: block;
-    font-size: rem(1.4);
-    text-transform: uppercase;
-    padding: $baseline-grid * 2;
-    font-weight: 500;
-  }
-  md-option {
-    padding-left: $select-option-padding * 2;
-    padding-right: $select-option-padding * 2;
+.md-menu {
+  padding: $baseline-grid 0;
+}
+
+md-toolbar {
+  .md-menu {
+    height: auto;
+    margin: auto;
+    padding: 0;
   }
 }
 
-@media screen and (-ms-high-contrast: active) {
-  .md-select-backdrop {
-    background-color: transparent;
+@media (max-width: $layout-breakpoint-sm - 1) {
+  md-menu-content {
+    min-width: 112px;
   }
-  md-select-menu {
-    border: 1px solid #fff;
+  @for $i from 3 through 7 {
+    md-menu-content[width="#{$i}"] {
+      min-width: $i * 56px;
+    }
   }
 }
+
+@media (min-width: $layout-breakpoint-sm) {
+  md-menu-content {
+    min-width: 96px;
+  }
+  @for $i from 3 through 7 {
+    md-menu-content[width="#{$i}"] {
+      min-width: $i * 64px;
+    }
+  }
+}
+
 
 $sidenav-mobile-width: 320px !default;
 $sidenav-desktop-width: 400px !default;
@@ -5379,74 +5148,6 @@ md-slider {
     &:not(.md-sticky-no-effect) .md-subheader-inner {
       animation: subheaderStickyHoverIn 0.3s ease-out both;
     }
-  }
-}
-
-$subheader-line-height: 1em !default;
-$subheader-font-size: rem(1.4) !default;
-$subheader-padding: ($baseline-grid * 2) !default;
-$subheader-font-weight: 500 !default;
-$subheader-margin: 0 0 0 0 !default;
-$subheader-sticky-shadow: 0px 2px 4px 0 rgba(0,0,0,0.16) !default;
-
-@keyframes subheaderStickyHoverIn {
-  0% {
-    box-shadow: 0 0 0 0 transparent;
-  }
-  100% {
-    box-shadow: $subheader-sticky-shadow;
-  }
-}
-@keyframes subheaderStickyHoverOut {
-  0% {
-    box-shadow: $subheader-sticky-shadow;
-  }
-  100% {
-    box-shadow: 0 0 0 0 transparent;
-  }
-}
-
-.md-subheader-wrapper {
-
-  &:not(.md-sticky-no-effect) {
-    .md-subheader {
-      margin: 0;
-    }
-
-    transition: 0.2s ease-out margin;
-
-    &.md-sticky-clone {
-      z-index: 2;
-    }
-
-    &[sticky-state="active"] {
-      margin-top: -2px;
-    }
-
-    &:not(.md-sticky-clone)[sticky-prev-state="active"] .md-subheader-inner:after {
-      animation: subheaderStickyHoverOut 0.3s ease-out both;
-    }
-  }
-
-}
-
-.md-subheader {
-  display: block;
-  font-size: $subheader-font-size;
-  font-weight: $subheader-font-weight;
-  line-height: $subheader-line-height;
-  margin: $subheader-margin;
-  position: relative;
-
-  .md-subheader-inner {
-    display: block;
-    padding: $subheader-padding;
-  }
-
-  .md-subheader-content {
-    display: block;
-    z-index: 1;
-    position: relative;
   }
 }
 
@@ -5900,6 +5601,593 @@ md-toolbar + md-tabs {
   border-top-right-radius: 0;
 }
 
+$subheader-line-height: 1em !default;
+$subheader-font-size: rem(1.4) !default;
+$subheader-padding: ($baseline-grid * 2) !default;
+$subheader-font-weight: 500 !default;
+$subheader-margin: 0 0 0 0 !default;
+$subheader-sticky-shadow: 0px 2px 4px 0 rgba(0,0,0,0.16) !default;
+
+@keyframes subheaderStickyHoverIn {
+  0% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  100% {
+    box-shadow: $subheader-sticky-shadow;
+  }
+}
+@keyframes subheaderStickyHoverOut {
+  0% {
+    box-shadow: $subheader-sticky-shadow;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.md-subheader-wrapper {
+
+  &:not(.md-sticky-no-effect) {
+    .md-subheader {
+      margin: 0;
+    }
+
+    transition: 0.2s ease-out margin;
+
+    &.md-sticky-clone {
+      z-index: 2;
+    }
+
+    &[sticky-state="active"] {
+      margin-top: -2px;
+    }
+
+    &:not(.md-sticky-clone)[sticky-prev-state="active"] .md-subheader-inner:after {
+      animation: subheaderStickyHoverOut 0.3s ease-out both;
+    }
+  }
+
+}
+
+.md-subheader {
+  display: block;
+  font-size: $subheader-font-size;
+  font-weight: $subheader-font-weight;
+  line-height: $subheader-line-height;
+  margin: $subheader-margin;
+  position: relative;
+
+  .md-subheader-inner {
+    display: block;
+    padding: $subheader-padding;
+  }
+
+  .md-subheader-content {
+    display: block;
+    z-index: 1;
+    position: relative;
+  }
+}
+
+$select-option-height: 48px;
+$select-option-padding: 16px;
+$select-container-padding: 16px;
+$select-container-transition-duration: 350ms;
+
+$select-max-visible-options: 5;
+
+.md-select-menu-container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: $z-index-select;
+  opacity: 0;
+  display: none;
+
+  // Don't let the user select a new choice while it's animating
+  &:not(.md-clickable) {
+    pointer-events: none;
+  }
+
+  md-progress-circular {
+    display: table;
+    margin: 3*$baseline-grid auto !important;
+  }
+
+
+  // enter: md-select scales in, then options fade in.
+  &.md-active {
+    display: block;
+    opacity: 1;
+    md-select-menu {
+      transition: $swift-ease-out;
+      transition-duration: 150ms;
+      > * {
+        opacity: 1;
+        transition: $swift-ease-in;
+        transition-duration: 150ms;
+        transition-delay: 100ms;
+      }
+    }
+  }
+
+  // leave: the container fades out
+  &.md-leave {
+    opacity: 0;
+    transition: $swift-ease-in;
+    transition-duration: 250ms;
+  }
+}
+
+md-input-container > md-select {
+  margin: 0;
+  order: 2;
+}
+
+md-select {
+  display: flex;
+  margin: 2.5*$baseline-grid 0 3*$baseline-grid + 2 0;
+  &[disabled] .md-select-value {
+    background-position: 0 bottom;
+    // This background-size is coordinated with a linear-gradient set in select-theme.scss
+    // to create a dotted line under the input.
+    background-size: 4px 1px;
+    background-repeat: repeat-x;
+    margin-bottom: -1px; // Shift downward so dotted line is positioned the same as other bottom borders
+  }
+  &:focus {
+    outline: none;
+  }
+  &[disabled]:hover {
+    cursor: default;
+  }
+  &:not([disabled]) {
+    &:hover {
+      cursor: pointer
+    }
+    &.ng-invalid.ng-dirty {
+      .md-select-value {
+        border-bottom: 2px solid;
+        padding-bottom: 0;
+      }
+    }
+    &:focus {
+      .md-select-value {
+        border-bottom-width: 2px;
+        border-bottom-style: solid;
+        padding-bottom: 0;
+      }
+    }
+  }
+}
+
+
+.md-select-value {
+  display: flex;
+  align-items: center;
+  padding: 2px 2px 1px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  background-color: rgba(0,0,0,0);
+  position: relative;
+  box-sizing: content-box;
+  min-width: 8 * $baseline-grid;
+  min-height: 26px;
+  flex-grow: 1;
+
+  .md-text {
+    display: inline;
+  }
+
+  *:first-child {
+    flex: 1 0 auto;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    transform: translate3d(0, 2px, 0);
+  }
+
+  .md-select-icon {
+    display: block;
+    align-items: flex-end;
+    text-align: end;
+    width: 3 * $baseline-grid;
+    margin: 0 .5 * $baseline-grid;
+    transform: translate3d(0, 1px, 0);
+  }
+
+  .md-select-icon:after {
+    display: block;
+    content: '\25BC';
+    position: relative;
+    top: 2px;
+    speak: none;
+    transform: scaleY(0.6) scaleX(1);
+  }
+
+  &.md-select-placeholder {
+    display: flex;
+    order: 1;
+    pointer-events: none;
+    -webkit-font-smoothing: antialiased;
+    padding-left: 2px;
+    z-index: 1;
+  }
+}
+
+md-select-menu {
+  display: flex;
+  flex-direction: column;
+  &.md-reverse {
+    flex-direction: column-reverse;
+  }
+
+  &:not(.md-overflow) {
+    md-content {
+      padding-top: $baseline-grid;
+      padding-bottom: $baseline-grid;
+    }
+  }
+
+  box-shadow: $whiteframe-shadow-1dp;
+  max-height: ($select-option-height * $select-max-visible-options) + 2 * $baseline-grid;
+  min-height: $select-option-height;
+  overflow-y: hidden;
+
+  @include rtl(transform-origin, left top, right top);
+
+  transform: scale(1.0);
+
+  md-content {
+    min-width: 136px;
+    min-height: $select-option-height;
+    max-height: ($select-option-height * $select-max-visible-options) + 2 * $baseline-grid;
+    overflow-y: auto;
+  }
+  > * {
+    opacity: 0;
+  }
+}
+
+md-option {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: auto;
+
+  &[disabled] {
+    cursor: default;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  .md-text {
+    @include not-selectable();
+    width: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: rem(1.6);
+  }
+  padding: 0 $select-option-padding 0 $select-option-padding;
+  height: $select-option-height;
+}
+
+md-optgroup {
+  display: block;
+  label {
+    display: block;
+    font-size: rem(1.4);
+    text-transform: uppercase;
+    padding: $baseline-grid * 2;
+    font-weight: 500;
+  }
+  md-option {
+    padding-left: $select-option-padding * 2;
+    padding-right: $select-option-padding * 2;
+  }
+}
+
+@media screen and (-ms-high-contrast: active) {
+  .md-select-backdrop {
+    background-color: transparent;
+  }
+  md-select-menu {
+    border: 1px solid #fff;
+  }
+}
+
+// Standard/Desktop Heights
+$toolbar-tools-height: 64px !default;
+$toolbar-height: 64px !default;
+$toolbar-medium-tall-height: 88px !default;
+$toolbar-tall-height: 128px !default;
+
+// Mobile portrait heights
+$toolbar-tools-height-mobile-portrait: 56px !default;
+$toolbar-height-mobile-portrait: 56px !default;
+
+// Mobile landscape heights
+$toolbar-tools-height-mobile-landscape: 48px !default;
+$toolbar-height-mobile-landscape: 48px !default;
+
+
+$toolbar-indent-margin: 64px !default;
+$toolbar-padding: 16px !default;
+
+$icon-button-margin-offset: rem(-0.800) !default;
+
+md-toolbar {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+
+  position: relative;
+  z-index: 2;
+
+  font-size: rem(2.0);
+  min-height: $baseline-grid * 8;
+  width: 100%;
+
+  &.md-whiteframe-z1-add, &.md-whiteframe-z1-remove {
+    transition: box-shadow $swift-ease-in-out-duration linear;
+  }
+
+  md-toolbar-filler {
+    width: 9 * $baseline-grid;
+  }
+
+  *,
+  *:before,
+  *:after {
+    box-sizing: border-box;
+  }
+
+  &.md-tall {
+    height: $toolbar-tall-height;
+    min-height: $toolbar-tall-height;
+    max-height: $toolbar-tall-height;
+  }
+
+  &.md-medium-tall {
+    height: $toolbar-medium-tall-height;
+    min-height: $toolbar-medium-tall-height;
+    max-height: $toolbar-medium-tall-height;
+
+    .md-toolbar-tools {
+      height: 48px;
+      min-height: 48px;
+      max-height: 48px;
+    }
+  }
+
+  > .md-indent {
+    margin-left: $toolbar-indent-margin;
+  }
+
+  ~ md-content {
+    > md-list {
+      padding: 0;
+
+      md-list-item:last-child {
+        md-divider {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+.md-toolbar-tools {
+  font-size: $title-font-size-base;
+  letter-spacing: 0.005em;
+  box-sizing: border-box;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+
+  width: 100%;
+  height: $toolbar-tools-height;
+  max-height: $toolbar-tools-height;
+  padding: 0 $toolbar-padding;
+  margin: 0;
+
+  h1, h2, h3 {
+    font-size: inherit;
+    font-weight: inherit;
+    margin: inherit;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .fill-height {
+    display: flex;
+    align-items: center;
+  }
+  .md-button {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  &> .md-button:first-child {
+    margin-left: $icon-button-margin-offset;
+  }
+  &> .md-button:last-child {
+    margin-right: $icon-button-margin-offset;
+  }
+
+  &> md-menu:last-child {
+    margin-right: $icon-button-margin-offset;
+    & > .md-button {
+      margin-right: 0;
+    }
+  }
+
+  @media screen and (-ms-high-contrast: active) {
+    border-bottom: 1px solid #fff;
+  }
+}
+
+// Handle mobile portrait
+@media only screen and (min-width: 0) and (max-width: $layout-breakpoint-sm - 1) and (orientation: portrait) {
+  md-toolbar {
+    min-height: $toolbar-height-mobile-portrait;
+  }
+
+  .md-toolbar-tools {
+    height: $toolbar-height-mobile-portrait;
+    max-height: $toolbar-height-mobile-portrait;
+  }
+}
+
+// Handle mobile landscape
+@media only screen and (min-width: 0) and (max-width: $layout-breakpoint-sm - 1) and (orientation: landscape) {
+  md-toolbar {
+    min-height: $toolbar-height-mobile-landscape;
+  }
+
+  .md-toolbar-tools {
+    height: $toolbar-height-mobile-landscape;
+    max-height: $toolbar-height-mobile-landscape;
+  }
+}
+
+
+$virtual-repeat-scrollbar-width: 16px;
+
+.md-virtual-repeat-container {
+  box-sizing: border-box;
+  display: block;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+
+  .md-virtual-repeat-scroller {
+    bottom: 0;
+    box-sizing: border-box;
+    left: 0;
+    margin: 0;
+    overflow-x: hidden;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .md-virtual-repeat-sizer {
+    box-sizing: border-box;
+    height: 1px;
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 1px;
+  }
+
+  .md-virtual-repeat-offsetter {
+    box-sizing: border-box;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
+
+.md-virtual-repeat-container.md-orient-horizontal {
+  .md-virtual-repeat-scroller {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .md-virtual-repeat-offsetter {
+    // Leave room for the scroll bar.
+    // TODO: Will probably need to perform measurements at runtime.
+    bottom: $virtual-repeat-scrollbar-width;
+    right: auto;
+    white-space: nowrap;
+  }
+}
+
+$tooltip-fontsize-lg: rem(1);
+$tooltip-fontsize-sm: rem(1.4);
+$tooltip-height-lg: rem(2.2);
+$tooltip-height-sm: rem(3.2);
+$tooltip-top-margin-lg: rem(1.4);
+$tooltip-top-margin-sm: rem(2.4);
+$tooltip-lr-padding-lg: rem(0.8);
+$tooltip-lr-padding-sm: rem(1.6);
+$tooltip-max-width: rem(3.20);
+
+md-tooltip {
+  position: absolute;
+  z-index: $z-index-tooltip;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: 4px;
+
+  font-weight: 500;
+  font-size: $tooltip-fontsize-sm;
+  @media screen and (min-width: $layout-breakpoint-sm) {
+    font-size: $tooltip-fontsize-lg;
+  }
+
+  .md-content {
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transform-origin: center top;
+    transform: scale(0);
+    opacity: 0;
+    height: $tooltip-height-sm;
+    line-height: $tooltip-height-sm;
+    padding-left: $tooltip-lr-padding-sm;
+    padding-right: $tooltip-lr-padding-sm;
+    @media screen and (min-width: $layout-breakpoint-sm) {
+      height: $tooltip-height-lg;
+      line-height: $tooltip-height-lg;
+      padding-left: $tooltip-lr-padding-lg;
+      padding-right: $tooltip-lr-padding-lg;
+    }
+    &.md-show-add {
+      transition: $swift-ease-out;
+      transition-duration: .2s;
+      transform: scale(0);
+      opacity: 0;
+    }
+    &.md-show, &.md-show-add-active {
+      transform: scale(1);
+      opacity: 1;
+      transform-origin: center top;
+    }
+    &.md-show-remove {
+      transition: $swift-ease-out;
+      transition-duration: .2s;
+      &.md-show-remove-active {
+        transform: scale(0);
+        opacity: 0;
+      }
+    }
+  }
+
+  &.md-hide {
+    transition: $swift-ease-in;
+  }
+
+  &.md-show {
+    transition: $swift-ease-out;
+    pointer-events: auto;
+    will-change: opacity, height, width;
+  }
+}
+
 // See height set globally, depended on by buttons
 
 md-toast {
@@ -6099,294 +6387,6 @@ md-toast {
 // While animating, set the toast parent's overflow to hidden so scrollbars do not appear
 .md-toast-animating {
   overflow: hidden !important;
-}
-
-// Standard/Desktop Heights
-$toolbar-tools-height: 64px !default;
-$toolbar-height: 64px !default;
-$toolbar-medium-tall-height: 88px !default;
-$toolbar-tall-height: 128px !default;
-
-// Mobile portrait heights
-$toolbar-tools-height-mobile-portrait: 56px !default;
-$toolbar-height-mobile-portrait: 56px !default;
-
-// Mobile landscape heights
-$toolbar-tools-height-mobile-landscape: 48px !default;
-$toolbar-height-mobile-landscape: 48px !default;
-
-
-$toolbar-indent-margin: 64px !default;
-$toolbar-padding: 16px !default;
-
-$icon-button-margin-offset: rem(-0.800) !default;
-
-md-toolbar {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-
-  position: relative;
-  z-index: 2;
-
-  font-size: rem(2.0);
-  min-height: $baseline-grid * 8;
-  width: 100%;
-
-  &.md-whiteframe-z1-add, &.md-whiteframe-z1-remove {
-    transition: box-shadow $swift-ease-in-out-duration linear;
-  }
-
-  md-toolbar-filler {
-    width: 9 * $baseline-grid;
-  }
-
-  *,
-  *:before,
-  *:after {
-    box-sizing: border-box;
-  }
-
-  &.md-tall {
-    height: $toolbar-tall-height;
-    min-height: $toolbar-tall-height;
-    max-height: $toolbar-tall-height;
-  }
-
-  &.md-medium-tall {
-    height: $toolbar-medium-tall-height;
-    min-height: $toolbar-medium-tall-height;
-    max-height: $toolbar-medium-tall-height;
-
-    .md-toolbar-tools {
-      height: 48px;
-      min-height: 48px;
-      max-height: 48px;
-    }
-  }
-
-  > .md-indent {
-    margin-left: $toolbar-indent-margin;
-  }
-
-  ~ md-content {
-    > md-list {
-      padding: 0;
-
-      md-list-item:last-child {
-        md-divider {
-          display: none;
-        }
-      }
-    }
-  }
-}
-
-.md-toolbar-tools {
-  font-size: $title-font-size-base;
-  letter-spacing: 0.005em;
-  box-sizing: border-box;
-  font-weight: 400;
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-
-  width: 100%;
-  height: $toolbar-tools-height;
-  max-height: $toolbar-tools-height;
-  padding: 0 $toolbar-padding;
-  margin: 0;
-
-  h1, h2, h3 {
-    font-size: inherit;
-    font-weight: inherit;
-    margin: inherit;
-  }
-
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-  .fill-height {
-    display: flex;
-    align-items: center;
-  }
-  .md-button {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-  &> .md-button:first-child {
-    margin-left: $icon-button-margin-offset;
-  }
-  &> .md-button:last-child {
-    margin-right: $icon-button-margin-offset;
-  }
-
-  &> md-menu:last-child {
-    margin-right: $icon-button-margin-offset;
-    & > .md-button {
-      margin-right: 0;
-    }
-  }
-
-  @media screen and (-ms-high-contrast: active) {
-    border-bottom: 1px solid #fff;
-  }
-}
-
-// Handle mobile portrait
-@media only screen and (min-width: 0) and (max-width: $layout-breakpoint-sm - 1) and (orientation: portrait) {
-  md-toolbar {
-    min-height: $toolbar-height-mobile-portrait;
-  }
-
-  .md-toolbar-tools {
-    height: $toolbar-height-mobile-portrait;
-    max-height: $toolbar-height-mobile-portrait;
-  }
-}
-
-// Handle mobile landscape
-@media only screen and (min-width: 0) and (max-width: $layout-breakpoint-sm - 1) and (orientation: landscape) {
-  md-toolbar {
-    min-height: $toolbar-height-mobile-landscape;
-  }
-
-  .md-toolbar-tools {
-    height: $toolbar-height-mobile-landscape;
-    max-height: $toolbar-height-mobile-landscape;
-  }
-}
-
-
-$tooltip-fontsize-lg: rem(1);
-$tooltip-fontsize-sm: rem(1.4);
-$tooltip-height-lg: rem(2.2);
-$tooltip-height-sm: rem(3.2);
-$tooltip-top-margin-lg: rem(1.4);
-$tooltip-top-margin-sm: rem(2.4);
-$tooltip-lr-padding-lg: rem(0.8);
-$tooltip-lr-padding-sm: rem(1.6);
-$tooltip-max-width: rem(3.20);
-
-md-tooltip {
-  position: absolute;
-  z-index: $z-index-tooltip;
-  overflow: hidden;
-  pointer-events: none;
-  border-radius: 4px;
-
-  font-weight: 500;
-  font-size: $tooltip-fontsize-sm;
-  @media screen and (min-width: $layout-breakpoint-sm) {
-    font-size: $tooltip-fontsize-lg;
-  }
-
-  .md-content {
-    position: relative;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transform-origin: center top;
-    transform: scale(0);
-    opacity: 0;
-    height: $tooltip-height-sm;
-    line-height: $tooltip-height-sm;
-    padding-left: $tooltip-lr-padding-sm;
-    padding-right: $tooltip-lr-padding-sm;
-    @media screen and (min-width: $layout-breakpoint-sm) {
-      height: $tooltip-height-lg;
-      line-height: $tooltip-height-lg;
-      padding-left: $tooltip-lr-padding-lg;
-      padding-right: $tooltip-lr-padding-lg;
-    }
-    &.md-show-add {
-      transition: $swift-ease-out;
-      transition-duration: .2s;
-      transform: scale(0);
-      opacity: 0;
-    }
-    &.md-show, &.md-show-add-active {
-      transform: scale(1);
-      opacity: 1;
-      transform-origin: center top;
-    }
-    &.md-show-remove {
-      transition: $swift-ease-out;
-      transition-duration: .2s;
-      &.md-show-remove-active {
-        transform: scale(0);
-        opacity: 0;
-      }
-    }
-  }
-
-  &.md-hide {
-    transition: $swift-ease-in;
-  }
-
-  &.md-show {
-    transition: $swift-ease-out;
-    pointer-events: auto;
-    will-change: opacity, height, width;
-  }
-}
-
-$virtual-repeat-scrollbar-width: 16px;
-
-.md-virtual-repeat-container {
-  box-sizing: border-box;
-  display: block;
-  margin: 0;
-  overflow: hidden;
-  padding: 0;
-  position: relative;
-
-  .md-virtual-repeat-scroller {
-    bottom: 0;
-    box-sizing: border-box;
-    left: 0;
-    margin: 0;
-    overflow-x: hidden;
-    padding: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-
-  .md-virtual-repeat-sizer {
-    box-sizing: border-box;
-    height: 1px;
-    display: block;
-    margin: 0;
-    padding: 0;
-    width: 1px;
-  }
-
-  .md-virtual-repeat-offsetter {
-    box-sizing: border-box;
-    left: 0;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-}
-
-.md-virtual-repeat-container.md-orient-horizontal {
-  .md-virtual-repeat-scroller {
-    overflow-x: auto;
-    overflow-y: hidden;
-  }
-
-  .md-virtual-repeat-offsetter {
-    // Leave room for the scroll bar.
-    // TODO: Will probably need to perform measurements at runtime.
-    bottom: $virtual-repeat-scrollbar-width;
-    right: auto;
-    white-space: nowrap;
-  }
 }
 
 .md-whiteframe-1dp, .md-whiteframe-z1 {
