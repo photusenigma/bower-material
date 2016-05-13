@@ -2755,24 +2755,6 @@ md-datepicker[disabled] {
   }
 }
 
-md-divider {
-  display: block;
-  border-top-width: 1px;
-  border-top-style: solid;
-  margin: 0;
-
-  &[md-inset] {
-    margin-left: $baseline-grid * 10;
-  }
-}
-
-.layout-row {
-  & > md-divider {
-    border-top-width: 0;
-    border-right-width: 1px;
-    border-right-style: solid;
-  }
-}
 $dialog-padding: $baseline-grid * 3;
 
 .md-dialog-is-showing {
@@ -2903,6 +2885,24 @@ md-dialog {
   }
 }
 
+md-divider {
+  display: block;
+  border-top-width: 1px;
+  border-top-style: solid;
+  margin: 0;
+
+  &[md-inset] {
+    margin-left: $baseline-grid * 10;
+  }
+}
+
+.layout-row {
+  & > md-divider {
+    border-top-width: 0;
+    border-right-width: 1px;
+    border-right-style: solid;
+  }
+}
 md-fab-speed-dial {
   position: relative;
   display: flex;

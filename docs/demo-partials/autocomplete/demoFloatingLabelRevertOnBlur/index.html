@@ -1,0 +1,54 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+    body * {outline: none;}
+</style>
+<div ng-controller="DemoCtrl as ctrl" layout="column" ng-cloak>
+  <md-content class="md-padding">
+    <form ng-submit="$event.preventDefault()" name="searchForm">
+      <p>The following example demonstrates floating labels being used as a normal form element.</p>
+      <div layout-gt-sm="row">
+        <md-input-container flex>
+          <label>Name (normal mp-input field)</label>
+          <input type="text"/>
+        </md-input-container>
+        <md-autocomplete flex
+            md-input-name="autocompleteField"
+            md-input-minlength="0"
+            md-input-maxlength="18"
+            md-no-cache="ctrl.noCache"
+            md-selected-item="ctrl.selectedItem"
+            md-search-text="ctrl.searchText"
+            md-items="item in ctrl.querySearch(ctrl.searchText)"
+            md-item-text="item.display"
+            md-floating-label="Favorite state (md-autocomplete with @md-act-like-selected)"
+            md-item-has-focus="ctrl.itemHasFocus"
+            md-item-focus-change="ctrl.handleFocusChange"
+            md-selected-item-change="ctrl.handleSelectedItemChange(item)"
+            md-show-option-tooltips="true"
+            md-act-like-select>
+          <md-item-template>
+            <span md-highlight-text="ctrl.searchText">{{item.display}}</span>
+          </md-item-template>
+          <div ng-messages="searchForm.autocompleteField.$error" ng-if="searchForm.autocompleteField.$touched">
+            <div ng-message="required">You <b>must</b> have a favorite state.</div>
+            <div ng-message="minlength">Your entry is not long enough.</div>
+            <div ng-message="maxlength">Your entry is too long.</div>
+          </div>
+        </md-autocomplete>
+      </div>
+    </form>
+
+      <div>
+          <p>
+          <div>
+            <b>selected item: </b> <span>{{ctrl.selectedItem}}</span>
+          </div>
+
+
+            </p>
+            <p>
+                <button value="Select Vermont" ng-click="ctrl.selectItem('Vermont')">Select Vermont</button> <md-icon md-font-set="material-icons" class="material-icons" fill="#666666" size="20">arrow_drop_down</md-icon> <br/>
+            </p>
+      </div>
+  </md-content>
+</div>
