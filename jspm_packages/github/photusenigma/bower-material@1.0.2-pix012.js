@@ -1,0 +1,1 @@
+module.exports = require("github:photusenigma/bower-material@1.0.2-pix012/index");

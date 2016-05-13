@@ -45,7 +45,8 @@
             md-item-has-focus="ctrl.itemHasFocus"
             md-item-focus-change="ctrl.handleFocusChange"
             md-selected-item-change="ctrl.handleSelectedItemChange(item)"
-            md-show-option-tooltips="true"
+            md-show-item-tooltips="true"
+            md-item-display-prop="name"
             md-act-like-select>
           <md-item-template>
             <span md-highlight-text="ctrl.searchText">{{item.display}}</span>

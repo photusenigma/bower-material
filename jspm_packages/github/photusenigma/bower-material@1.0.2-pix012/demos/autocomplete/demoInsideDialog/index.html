@@ -1,0 +1,33 @@
+<!doctype html>
+<html ng-app="autocompleteDemoInsideDialog">
+<head>
+    <title>demoInsideDialog</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+
+    <script src="/node_modules/angular/angular.js"></script>
+    <script src="/node_modules/angular-animate/angular-animate.js"></script>
+    <script src="/node_modules/angular-aria/angular-aria.js"></script>
+    <script src="/node_modules/angular-messages/angular-messages.js"></script>
+    <script src="/dist/angular-material.js"></script>
+
+    <link rel="stylesheet" href="/dist/angular-material.css">
+
+    
+    <script src="script.js"></script>
+    
+    
+</head>
+
+<body>
+<div ng-controller="DemoCtrl as ctrl" layout="column" ng-cloak>
+  <md-content class="md-padding">
+    <p>
+      Click the button below to open the dialog with an autocomplete.
+    </p>
+
+    <md-button ng-click="ctrl.openDialog($event)" class="md-raised">Open Dialog</md-button>
+  </md-content>
+</div>
+
+</body>
+</html>

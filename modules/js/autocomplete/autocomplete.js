@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v1.0.0-rc2-master-fcd199e
+ * v1.0.2
  */
 (function( window, angular, undefined ){
 "use strict";
@@ -24,9 +24,10 @@ angular
     .module('material.components.autocomplete')
     .controller('MdAutocompleteCtrl', MdAutocompleteCtrl);
 
-var ITEM_HEIGHT  = 41,
-    MAX_HEIGHT   = 5.5 * ITEM_HEIGHT,
-    MENU_PADDING = 8;
+var ITEM_HEIGHT   = 41,
+    MAX_HEIGHT    = 5.5 * ITEM_HEIGHT,
+    MENU_PADDING  = 8,
+    INPUT_PADDING = 2; // Padding provided by `md-input-container`
 
 function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming, $window,
                              $animate, $rootElement, $attrs, $q) {
@@ -73,6 +74,11 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
   ctrl.notFoundVisible               = notFoundVisible;
   ctrl.loadingIsVisible              = loadingIsVisible;
 
+  ctrl.focusElement                  = focusElement;
+  ctrl.initComplete = false;
+
+
+
   return init();
 
   //-- initialization methods
@@ -81,14 +87,17 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * Initialize the controller, setup watchers, gather elements
    */
   function init () {
+    ctrl.initComplete = false;
     $mdUtil.initOptionalProperties($scope, $attrs, { searchText: null, selectedItem: null });
     $mdTheming($element);
     configureWatchers();
+    if ($scope.selectedItem) ctrl.previousSelectedItem = $scope.selectedItem;
     $mdUtil.nextTick(function () {
       gatherElements();
       moveDropdown();
       focusElement();
       $element.on('focus', focusElement);
+      ctrl.initComplete = true;
     });
   }
 
@@ -106,11 +115,17 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
         left   = hrect.left - root.left,
         width  = hrect.width,
         offset = getVerticalOffset(),
-        styles = {
-          left:     left + 'px',
-          minWidth: width + 'px',
-          maxWidth: Math.max(hrect.right - root.left, root.right - hrect.left) - MENU_PADDING + 'px'
-        };
+        styles;
+    // Adjust the width to account for the padding provided by `md-input-container`
+    if ($attrs.mdFloatingLabel) {
+      left += INPUT_PADDING;
+      width -= INPUT_PADDING * 2;
+    }
+    styles = {
+      left:     left + 'px',
+      minWidth: width + 'px',
+      maxWidth: Math.max(hrect.right - root.left, root.right - hrect.left) - MENU_PADDING + 'px'
+    };
     if (top > bot && root.height - hrect.bottom - MENU_PADDING < MAX_HEIGHT) {
       styles.top       = 'auto';
       styles.bottom    = bot + 'px';
@@ -118,7 +133,7 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
     } else {
       styles.top       = (top - offset) + 'px';
       styles.bottom    = 'auto';
-      styles.maxHeight = Math.min(MAX_HEIGHT, root.bottom - hrect.bottom - MENU_PADDING) + 'px';
+      styles.maxHeight = Math.min(MAX_HEIGHT, root.bottom + $mdUtil.scrollTop() - hrect.bottom - MENU_PADDING) + 'px';
     }
 
     elements.$.scrollContainer.css(styles);
@@ -136,6 +151,8 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
         offset = inputContainer.prop('offsetHeight');
         offset -= input.prop('offsetTop');
         offset -= input.prop('offsetHeight');
+        // add in the height left up top for the floating label text
+        offset += inputContainer.prop('offsetTop');
       }
       return offset;
     }
@@ -168,7 +185,7 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * Sends focus to the input element.
    */
   function focusElement () {
-    if ($scope.autofocus) elements.input.focus();
+    if ($scope.autofocus || ($scope.revertOnBlur && ctrl.initComplete)) elements.input.focus();
   }
 
   /**
@@ -176,8 +193,8 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    */
   function configureWatchers () {
     var wait = parseInt($scope.delay, 10) || 0;
-    $attrs.$observe('disabled', function (value) { ctrl.isDisabled = value; });
-    $attrs.$observe('required', function (value) { ctrl.isRequired = value !== null; });
+    $attrs.$observe('disabled', function (value) { ctrl.isDisabled = !!value; });
+    $attrs.$observe('required', function (value) { ctrl.isRequired = !!value; });
     $scope.$watch('searchText', wait ? $mdUtil.debounce(handleSearchText, wait) : handleSearchText);
     $scope.$watch('selectedItem', selectedItemChange);
     angular.element($window).on('resize', positionDropdown);
@@ -282,6 +299,7 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * When the mouse button is released, send focus back to the input field.
    */
   function onMouseup () {
+    ctrl.selectionByMouse = true;
     elements.input.focus();
   }
 
@@ -292,13 +310,23 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    */
   function selectedItemChange (selectedItem, previousSelectedItem) {
     if (selectedItem) {
+      if(!ctrl.selectionByMouse) ctrl.previousSelectedItem = selectedItem;
       getDisplayValue(selectedItem).then(function (val) {
         $scope.searchText = val;
         handleSelectedItemChange(selectedItem, previousSelectedItem);
       });
     }
 
-    if (selectedItem !== previousSelectedItem) announceItemChange();
+    if (shouldAnnounceChange(selectedItem)) announceItemChange(selectedItem);
+  }
+
+  function shouldAnnounceChange (selectedItem) {
+    var shouldAnnounce = !$scope.revertOnBlur || selectedItem;
+    return shouldAnnounce;
+  }
+
+  function announceFocusChange () {
+    angular.isFunction($scope.itemFocusChange) && $scope.itemFocusChange()($scope.itemHasFocus);
   }
 
   /**
@@ -381,8 +409,10 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * Handles input blur event, determines if the dropdown should hide.
    */
   function blur () {
-    hasFocus = false;
     if (!noBlur) {
+      hasFocus = false;
+      $scope.itemHasFocus = hasFocus;
+      announceFocusChange();
       ctrl.hidden = shouldHide();
     }
   }
@@ -392,7 +422,10 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * @param forceBlur
    */
   function doBlur(forceBlur) {
-    if (forceBlur) noBlur = false;
+    if (forceBlur) {
+      noBlur = false;
+      hasFocus = false;
+    }
     elements.input.blur();
   }
 
@@ -401,8 +434,12 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    */
   function focus () {
     hasFocus = true;
-    //-- if searchText is null, let's force it to be a string
-    if (!angular.isString($scope.searchText)) $scope.searchText = '';
+    $scope.itemHasFocus = hasFocus;
+    announceFocusChange();  
+    //-- if searchText is null, let's force it to be a string - in most cases.
+    if (!angular.isString($scope.searchText) || ($scope.clearOnFocus && !ctrl.selectionByMouse)) {
+      $scope.searchText = '';
+    }
     ctrl.hidden = shouldHide();
     if (!ctrl.hidden) handleQuery();
   }
@@ -430,19 +467,23 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
         updateMessages();
         break;
       case $mdConstant.KEY_CODE.TAB:
+        // If we hit tab, assume that we've left the list so it will close
+        onListLeave();
+
         if (ctrl.hidden || ctrl.loading || ctrl.index < 0 || ctrl.matches.length < 1) return;
         select(ctrl.index);
         break;
       case $mdConstant.KEY_CODE.ENTER:
+        if (ctrl.hidden || ctrl.loading || ctrl.index < 0 || ctrl.matches.length < 1) return;
+        if (hasSelection()) return;
         event.stopPropagation();
         event.preventDefault();
-        if (ctrl.hidden || ctrl.loading || ctrl.index < 0 || ctrl.matches.length < 1) return;
         select(ctrl.index);
         break;
       case $mdConstant.KEY_CODE.ESCAPE:
         event.stopPropagation();
         event.preventDefault();
-        clearValue();
+        if (!$scope.revertOnBlur) clearValue();
 
         // Force the component to blur if they hit escape
         doBlur(true);
@@ -459,7 +500,7 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * @returns {*}
    */
   function getMinLength () {
-    return angular.isNumber($scope.minLength) ? $scope.minLength : 1;
+    return angular.isNumber($scope.minLength) ? $scope.minLength : 0;
   }
 
   /**
@@ -519,11 +560,27 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * @returns {boolean}
    */
   function shouldHide () {
-    if (ctrl.loading && !hasMatches()) return true; // Hide while loading initial matches
-    else if (hasSelection()) return true;           // Hide if there is already a selection
-    else if (!hasFocus) return true;                // Hide if the input does not have focus
-    else return !shouldShow();                      // Defer to standard show logic
+    var shouldHide = false;
+    if (ctrl.loading && !hasMatches()) shouldHide =  true; // Hide while loading initial matches
+    else if (hasSelection()) shouldHide =  true;           // Hide if there is already a selection
+    else if (!hasFocus) shouldHide =  true;                // Hide if the input does not have focus
+    else shouldHide =  !shouldShow();                      // Defer to standard show logic
+
+    if (shouldHide && !hasFocus) shouldRevertSelectedDisplay();
+    return shouldHide;
   }
+
+  function shouldRevertSelectedDisplay () {
+    if ($scope.revertOnBlur && !$scope.selectedItem) {
+      if (ctrl.previousSelectedItem) {
+        $scope.selectedItem = ctrl.previousSelectedItem || null;
+        selectedItemChange($scope.selectedItem);
+      } else {
+        $scope.searchText = '';
+      }
+    }
+  }
+
 
   /**
    * Determines if the menu should be shown.
@@ -605,6 +662,10 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
         ngModel.$render();
       }).finally(function () {
         $scope.selectedItem = ctrl.matches[ index ];
+        if ($scope.selectedItem) {
+           ctrl.previousSelectedItem = $scope.selectedItem;
+           ctrl.selectionByMouse = false;
+        }
         setLoading(false);
       });
     }, false);
@@ -721,7 +782,7 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * results first, then forwards the process to `fetchResults` if necessary.
    */
   function handleQuery () {
-    var searchText = $scope.searchText,
+    var searchText = $scope.searchText || '',
         term       = searchText.toLowerCase();
     //-- if results are cached, pull in cached results
     if (!$scope.noCache && cache[ term ]) {
@@ -895,9 +956,23 @@ function MdAutocomplete () {
       floatingLabel:  '@?mdFloatingLabel',
       autoselect:     '=?mdAutoselect',
       menuClass:      '@?mdMenuClass',
-      inputId:        '@?mdInputId'
+      inputId:        '@?mdInputId',
+      // PIX ADDED ITEMS
+      revertOnBlur:   '=?mdRevertOnBlur',
+      clearOnFocus:   '=?mdClearOnFocus',
+      itemHasFocus:   '=?mdItemHasFocus', 
+      itemFocusChange:'&?mdItemFocusChange',
+      actLikeSelect:  '&?mdActLikeSelect',
+      showItemTooltips: '&?mdShowItemTooltips',
+      itemDisplayProp: '&?mdItemDisplayProp'
+
     },
     link: function(scope, element, attrs, controller) {
+      if (attrs.hasOwnProperty('mdActLikeSelect')) {
+          scope.revertOnBlur = true;
+          scope.clearOnFocus = true;
+      }
+
       controller.hasNotFound = hasNotFoundTemplate;
     },
     template:     function (element, attr) {
@@ -906,13 +981,10 @@ function MdAutocomplete () {
           leftover        = element.html(),
           tabindex        = attr.tabindex;
 
-      if (noItemsTemplate) {
-        hasNotFoundTemplate = true;
-      }
+      // Set our variable for the link function above which runs later
+      hasNotFoundTemplate = noItemsTemplate ? true : false;
 
-      if (attr.hasOwnProperty('tabindex')) {
-        element.attr('tabindex', '-1');
-      }
+      if (!attr.hasOwnProperty('tabindex')) element.attr('tabindex', '-1');
 
       return '\
         <md-autocomplete-wrap\
@@ -921,6 +993,7 @@ function MdAutocomplete () {
             role="listbox">\
           ' + getInputElement() + '\
           <md-progress-linear\
+              class="' + (attr.mdFloatingLabel ? 'md-inline' : '') + '"\
               ng-if="$mdAutocompleteCtrl.loadingIsVisible()"\
               md-mode="indeterminate"></md-progress-linear>\
           <md-virtual-repeat-container\
@@ -931,11 +1004,12 @@ function MdAutocomplete () {
               ng-mouseup="$mdAutocompleteCtrl.mouseUp()"\
               ng-hide="$mdAutocompleteCtrl.hidden"\
               class="md-autocomplete-suggestions-container md-whiteframe-z1"\
+              ng-class="{ \'md-not-found\': $mdAutocompleteCtrl.notFoundVisible() }"\
               role="presentation">\
             <ul class="md-autocomplete-suggestions"\
                 ng-class="::menuClass"\
                 id="ul-{{$mdAutocompleteCtrl.id}}">\
-              <li md-virtual-repeat="item in $mdAutocompleteCtrl.matches"\
+              <li '+ getItemTooltip() +' md-virtual-repeat="item in $mdAutocompleteCtrl.matches"\
                   ng-class="{ selected: $index === $mdAutocompleteCtrl.index }"\
                   ng-click="$mdAutocompleteCtrl.select($index)"\
                   md-extra-name="$mdAutocompleteCtrl.itemName">\
@@ -950,6 +1024,12 @@ function MdAutocomplete () {
             aria-live="assertive">\
           <p ng-repeat="message in $mdAutocompleteCtrl.messages track by $index" ng-if="message">{{message}}</p>\
         </aria-status>';
+
+      function getItemTooltip() {
+        var displayProp = attr.hasOwnProperty('mdItemDisplayProp') ? attr.mdItemDisplayProp : 'display';
+        var itemTag = "item['"+ displayProp +"']";
+        return attr.hasOwnProperty('mdShowItemTooltips') ? 'title="{{'+ itemTag +'}}"' : '';
+      }
 
       function getItemTemplate() {
         var templateTag = element.find('md-item-template').detach(),
@@ -993,6 +1073,7 @@ function MdAutocomplete () {
                   aria-activedescendant=""\
                   aria-expanded="{{!$mdAutocompleteCtrl.hidden}}"/>\
               <div md-autocomplete-parent-scope md-autocomplete-replace>' + leftover + '</div>\
+              ' + (attr.hasOwnProperty('mdActLikeSelect') ? getSelectIcon() : '') + '\
             </md-input-container>';
         } else {
           return '\
@@ -1026,6 +1107,12 @@ function MdAutocomplete () {
                 ';
         }
       }
+
+      function getSelectIcon() {
+        // return '<md-icon md-font-set="material-icons" class="material-icons select-arrow-down" fill="#666666" size="20" ng-click="$mdAutocompleteCtrl.focusElement()">arrow_drop_down</md-icon>';
+        return '<span class="md-select-icon" aria-hidden="true" ng-click="$mdAutocompleteCtrl.focusElement()"></span>';
+      }
+
     }
   };
 }
@@ -1037,42 +1124,72 @@ angular
 function MdAutocompleteItemScopeDirective($compile, $mdUtil) {
   return {
     restrict: 'AE',
-    link: postLink,
-    terminal: true
+    compile: compile,
+    terminal: true,
+    transclude: 'element'
   };
 
-  function postLink(scope, element, attr) {
-    var ctrl = scope.$mdAutocompleteCtrl;
-    var newScope = ctrl.parent.$new();
-    var itemName = ctrl.itemName;
+  function compile(tElement, tAttr, transclude) {
+    return function postLink(scope, element, attr) {
+      var ctrl = scope.$mdAutocompleteCtrl;
+      var newScope = ctrl.parent.$new();
+      var itemName = ctrl.itemName;
 
-    // Watch for changes to our scope's variables and copy them to the new scope
-    watchVariable('$index', '$index');
-    watchVariable('item', itemName);
+      // Watch for changes to our scope's variables and copy them to the new scope
+      watchVariable('$index', '$index');
+      watchVariable('item', itemName);
 
-    // Recompile the contents with the new/modified scope
-    $compile(element.contents())(newScope);
+      // Ensure that $digest calls on our scope trigger $digest on newScope.
+      connectScopes();
 
-    // Replace it if required
-    if (attr.hasOwnProperty('mdAutocompleteReplace')) {
-      element.after(element.contents());
-      element.remove();
-    }
-
-    /**
-     * Creates a watcher for variables that are copied from the parent scope
-     * @param variable
-     * @param alias
-     */
-    function watchVariable(variable, alias) {
-      newScope[alias] = scope[variable];
-
-      scope.$watch(variable, function(value) {
-        $mdUtil.nextTick(function() {
-          newScope[alias] = value;
-        });
+      // Link the element against newScope.
+      transclude(newScope, function(clone) {
+        element.after(clone);
       });
-    }
+
+      /**
+       * Creates a watcher for variables that are copied from the parent scope
+       * @param variable
+       * @param alias
+       */
+      function watchVariable(variable, alias) {
+        newScope[alias] = scope[variable];
+
+        scope.$watch(variable, function(value) {
+          $mdUtil.nextTick(function() {
+            newScope[alias] = value;
+          });
+        });
+      }
+
+      /**
+       * Creates watchers on scope and newScope that ensure that for any
+       * $digest of scope, newScope is also $digested.
+       */
+      function connectScopes() {
+        var scopeDigesting = false;
+        var newScopeDigesting = false;
+
+        scope.$watch(function() {
+          if (newScopeDigesting || scopeDigesting) {
+            return;
+          }
+
+          scopeDigesting = true;
+          scope.$$postDigest(function() {
+            if (!newScopeDigesting) {
+              newScope.$digest();
+            }
+
+            scopeDigesting = newScopeDigesting = false;
+          });
+        });
+
+        newScope.$watch(function() {
+          newScopeDigesting = true;
+        });
+      }
+    };
   }
 }
 MdAutocompleteItemScopeDirective.$inject = ["$compile", "$mdUtil"];
@@ -1102,7 +1219,7 @@ function MdHighlightCtrl ($scope, $element, $attrs) {
 
           $element.html(text.replace(regex, '<span class="highlight">$&</span>'));
         }, true);
-    $element.on('$destroy', function () { watcher(); });
+    $element.on('$destroy', watcher);
   }
 
   function sanitize (term) {
