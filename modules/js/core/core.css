@@ -531,7 +531,8 @@ input {
 [flex-offset="66"] {
   margin-left: calc(200% / 3); }
 
-[layout-align] {
+[layout-align],
+[layout-align="start stretch"] {
   -webkit-justify-content: flex-start;
       -ms-flex-pack: start;
           justify-content: flex-start;
@@ -1574,7 +1575,8 @@ input {
     margin-left: calc(100% / 3); }
   [flex-offset-xs="66"] {
     margin-left: calc(200% / 3); }
-  [layout-align-xs] {
+  [layout-align-xs],
+  [layout-align-xs="start stretch"] {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -2471,7 +2473,8 @@ input {
     margin-left: calc(100% / 3); }
   [flex-offset-gt-xs="66"] {
     margin-left: calc(200% / 3); }
-  [layout-align-gt-xs] {
+  [layout-align-gt-xs],
+  [layout-align-gt-xs="start stretch"] {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -3372,7 +3375,8 @@ input {
     margin-left: calc(100% / 3); }
   [flex-offset-sm="66"] {
     margin-left: calc(200% / 3); }
-  [layout-align-sm] {
+  [layout-align-sm],
+  [layout-align-sm="start stretch"] {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -4269,7 +4273,8 @@ input {
     margin-left: calc(100% / 3); }
   [flex-offset-gt-sm="66"] {
     margin-left: calc(200% / 3); }
-  [layout-align-gt-sm] {
+  [layout-align-gt-sm],
+  [layout-align-gt-sm="start stretch"] {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -5170,7 +5175,8 @@ input {
     margin-left: calc(100% / 3); }
   [flex-offset-md="66"] {
     margin-left: calc(200% / 3); }
-  [layout-align-md] {
+  [layout-align-md],
+  [layout-align-md="start stretch"] {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -6067,7 +6073,8 @@ input {
     margin-left: calc(100% / 3); }
   [flex-offset-gt-md="66"] {
     margin-left: calc(200% / 3); }
-  [layout-align-gt-md] {
+  [layout-align-gt-md],
+  [layout-align-gt-md="start stretch"] {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -6968,7 +6975,8 @@ input {
     margin-left: calc(100% / 3); }
   [flex-offset-lg="66"] {
     margin-left: calc(200% / 3); }
-  [layout-align-lg] {
+  [layout-align-lg],
+  [layout-align-lg="start stretch"] {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -7865,7 +7873,8 @@ input {
     margin-left: calc(100% / 3); }
   [flex-offset-gt-lg="66"] {
     margin-left: calc(200% / 3); }
-  [layout-align-gt-lg] {
+  [layout-align-gt-lg],
+  [layout-align-gt-lg="start stretch"] {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -8760,7 +8769,8 @@ input {
     margin-left: calc(100% / 3); }
   [flex-offset-xl="66"] {
     margin-left: calc(200% / 3); }
-  [layout-align-xl] {
+  [layout-align-xl],
+  [layout-align-xl="start stretch"] {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -9752,7 +9762,8 @@ input {
 .offset-66, .flex-offset-66 {
   margin-left: calc(200% / 3); }
 
-.layout-align {
+.layout-align,
+.layout-align-start-stretch {
   -webkit-justify-content: flex-start;
       -ms-flex-pack: start;
           justify-content: flex-start;
@@ -10793,7 +10804,8 @@ input {
     margin-left: calc(100% / 3); }
   .offset-xs-66, .flex-offset-xs-66 {
     margin-left: calc(200% / 3); }
-  .layout-align-xs {
+  .layout-align-xs,
+  .layout-align-xs-start-stretch {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -11672,7 +11684,8 @@ input {
     margin-left: calc(100% / 3); }
   .offset-gt-xs-66, .flex-offset-gt-xs-66 {
     margin-left: calc(200% / 3); }
-  .layout-align-gt-xs {
+  .layout-align-gt-xs,
+  .layout-align-gt-xs-start-stretch {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -12555,7 +12568,8 @@ input {
     margin-left: calc(100% / 3); }
   .offset-sm-66, .flex-offset-sm-66 {
     margin-left: calc(200% / 3); }
-  .layout-align-sm {
+  .layout-align-sm,
+  .layout-align-sm-start-stretch {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -13434,7 +13448,8 @@ input {
     margin-left: calc(100% / 3); }
   .offset-gt-sm-66, .flex-offset-gt-sm-66 {
     margin-left: calc(200% / 3); }
-  .layout-align-gt-sm {
+  .layout-align-gt-sm,
+  .layout-align-gt-sm-start-stretch {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -14317,7 +14332,8 @@ input {
     margin-left: calc(100% / 3); }
   .offset-md-66, .flex-offset-md-66 {
     margin-left: calc(200% / 3); }
-  .layout-align-md {
+  .layout-align-md,
+  .layout-align-md-start-stretch {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -15196,7 +15212,8 @@ input {
     margin-left: calc(100% / 3); }
   .offset-gt-md-66, .flex-offset-gt-md-66 {
     margin-left: calc(200% / 3); }
-  .layout-align-gt-md {
+  .layout-align-gt-md,
+  .layout-align-gt-md-start-stretch {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -16079,7 +16096,8 @@ input {
     margin-left: calc(100% / 3); }
   .offset-lg-66, .flex-offset-lg-66 {
     margin-left: calc(200% / 3); }
-  .layout-align-lg {
+  .layout-align-lg,
+  .layout-align-lg-start-stretch {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -16958,7 +16976,8 @@ input {
     margin-left: calc(100% / 3); }
   .offset-gt-lg-66, .flex-offset-gt-lg-66 {
     margin-left: calc(200% / 3); }
-  .layout-align-gt-lg {
+  .layout-align-gt-lg,
+  .layout-align-gt-lg-start-stretch {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
@@ -17835,7 +17854,8 @@ input {
     margin-left: calc(100% / 3); }
   .offset-xl-66, .flex-offset-xl-66 {
     margin-left: calc(200% / 3); }
-  .layout-align-xl {
+  .layout-align-xl,
+  .layout-align-xl-start-stretch {
     -webkit-justify-content: flex-start;
         -ms-flex-pack: start;
             justify-content: flex-start;
