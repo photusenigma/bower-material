@@ -19,12 +19,10 @@ md-toast {
    * make it rotate when the user swipes it away
    */ }
   md-toast .md-toast-content {
-    display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
-    -webkit-align-items: center;
-        -ms-flex-align: center;
-            align-items: center;
+    -ms-flex-align: center;
+        align-items: center;
     height: 0;
     max-height: 168px;
     max-width: 100%;

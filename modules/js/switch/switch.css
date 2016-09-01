@@ -19,10 +19,8 @@ md-switch {
           user-select: none;
   height: 30px;
   line-height: 28px;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  display: -webkit-flex;
+  -ms-flex-align: center;
+      align-items: center;
   display: -ms-flexbox;
   display: flex;
   margin-left: inherit;
@@ -83,7 +81,6 @@ md-switch {
     md-switch[disabled] .md-container {
       cursor: default; }
   md-switch .md-container {
-    cursor: -webkit-grab;
     cursor: grab;
     width: 36px;
     height: 24px;
@@ -96,7 +93,6 @@ md-switch {
     float: left; }
   md-switch:not([disabled]) .md-dragging,
   md-switch:not([disabled]).md-dragging .md-container {
-    cursor: -webkit-grabbing;
     cursor: grabbing; }
   md-switch.md-focused:not([disabled]) .md-thumb:before {
     left: -8px;

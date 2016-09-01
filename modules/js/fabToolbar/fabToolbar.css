@@ -60,9 +60,8 @@ md-fab-toolbar {
   md-fab-toolbar.md-left md-fab-trigger {
     right: 0; }
   md-fab-toolbar.md-left .md-toolbar-tools {
-    -webkit-flex-direction: row-reverse;
-        -ms-flex-direction: row-reverse;
-            flex-direction: row-reverse; }
+    -ms-flex-direction: row-reverse;
+        flex-direction: row-reverse; }
     md-fab-toolbar.md-left .md-toolbar-tools > .md-button:first-child {
       margin-right: 0.6rem; }
     md-fab-toolbar.md-left .md-toolbar-tools > .md-button:first-child {
@@ -72,9 +71,8 @@ md-fab-toolbar {
   md-fab-toolbar.md-right md-fab-trigger {
     left: 0; }
   md-fab-toolbar.md-right .md-toolbar-tools {
-    -webkit-flex-direction: row;
-        -ms-flex-direction: row;
-            flex-direction: row; }
+    -ms-flex-direction: row;
+        flex-direction: row; }
   md-fab-toolbar md-toolbar {
     background-color: transparent !important;
     pointer-events: none;

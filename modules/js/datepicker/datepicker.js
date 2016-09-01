@@ -68,6 +68,7 @@
         minDate: '=mdMinDate',
         maxDate: '=mdMaxDate',
         dateFilter: '=mdDateFilter',
+        visualDateRange: '<mdVisualDateRange',
       },
       require: ['ngModel', 'mdCalendar'],
       controller: CalendarCtrl,
@@ -649,6 +650,18 @@
     cell.setAttribute('role', 'gridcell');
 
     if (opt_date) {
+      var isStartDatePicker = calendarCtrl.visualDateRange === 'start';
+      var isEndDatePicker = calendarCtrl.visualDateRange === 'end';
+      var hasMin = calendarCtrl.minDate;
+      var hasMax = calendarCtrl.maxDate;
+      var isToday = this.dateUtil.isSameDay(opt_date, calendarCtrl.today);
+      var isAfterSelected = opt_date >= calendarCtrl.selectedDate;
+      var isBeforeSelected = opt_date <= calendarCtrl.selectedDate;
+      var selectedDateMidnight = calendarCtrl.dateUtil.createDateAtMidnight(calendarCtrl.selectedDate);
+      var isSameSelected = calendarCtrl.dateUtil.isSameDay(opt_date, selectedDateMidnight);
+      var isEndDate = hasMax && this.dateUtil.isSameDay(opt_date, this.dateUtil.incrementDays(calendarCtrl.maxDate, 1));
+      var isStartDate = hasMin && this.dateUtil.isSameDay(opt_date, this.dateUtil.incrementDays(calendarCtrl.minDate, -1));
+
       cell.setAttribute('tabindex', '-1');
       cell.setAttribute('aria-label', this.dateLocale.longDateFormatter(opt_date));
       cell.id = calendarCtrl.getDateId(opt_date);
@@ -671,6 +684,7 @@
       var cellText = this.dateLocale.dates[opt_date.getDate()];
 
       if (this.isDateEnabled(opt_date)) {
+     
         // Add a indicator for select, hover, and focus states.
         var selectionIndicator = document.createElement('span');
         cell.appendChild(selectionIndicator);
@@ -682,6 +696,47 @@
         if (calendarCtrl.focusDate && this.dateUtil.isSameDay(opt_date, calendarCtrl.focusDate)) {
           this.focusAfterAppend = cell;
         }
+
+        if (isStartDatePicker && (isToday || isAfterSelected || isSameSelected)) {
+          cell.classList.add('md-calendar-date-within-range');
+        } 
+
+        if (isStartDatePicker && isToday && isBeforeSelected) {
+          cell.classList.add('md-today-not-selected');
+        }
+
+        if (isEndDatePicker && isToday && isAfterSelected) {
+          cell.classList.add('md-today-not-selected');
+        }
+
+        if (isEndDatePicker && isBeforeSelected) {
+          cell.classList.add('md-calendar-date-within-range');
+        }
+
+        if (isEndDatePicker && !isBeforeSelected) {
+          cell.classList.add('md-date-selected-hover');
+        }
+
+        if (isStartDatePicker && !isAfterSelected) {
+          cell.classList.add('md-date-selected-hover');
+        }
+
+      } else if (isStartDatePicker && isEndDate) {
+        var selectionIndicator = document.createElement('span');
+        cell.appendChild(selectionIndicator);
+        selectionIndicator.classList.add('md-calendar-date-selection-indicator');
+        selectionIndicator.textContent = cellText;
+        cell.classList.add('md-calendar-date-disabled');
+        cell.classList.add('md-date-is-end-date');
+
+      } else if (isEndDatePicker && isStartDate) {
+        var selectionIndicator = document.createElement('span');
+        cell.appendChild(selectionIndicator);
+        selectionIndicator.classList.add('md-calendar-date-selection-indicator');
+        selectionIndicator.textContent = cellText;
+        cell.classList.add('md-calendar-date-disabled');
+        cell.classList.add('md-date-is-start-date');
+
       } else {
         cell.classList.add('md-calendar-date-disabled');
         cell.textContent = cellText;
@@ -1188,6 +1243,7 @@
               '<md-calendar role="dialog" aria-label="{{::ctrl.dateLocale.msgCalendar}}" ' +
                   'md-min-date="ctrl.minDate" md-max-date="ctrl.maxDate"' +
                   'md-date-filter="ctrl.dateFilter"' +
+                  'md-visual-date-range="ctrl.visualDateRange"' +
                   'ng-model="ctrl.date" ng-if="ctrl.isCalendarOpen">' +
               '</md-calendar>' +
             '</div>' +
@@ -1197,7 +1253,8 @@
         minDate: '=mdMinDate',
         maxDate: '=mdMaxDate',
         placeholder: '@mdPlaceholder',
-        dateFilter: '=mdDateFilter'
+        dateFilter: '=mdDateFilter',
+        visualDateRange: '<mdVisualDateRange'
       },
       controller: DatePickerCtrl,
       controllerAs: 'ctrl',

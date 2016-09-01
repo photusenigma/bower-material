@@ -179,9 +179,8 @@ md-input-container {
         unicode-bidi: bidi-override; }
   md-input-container label:not(.md-no-float):not(.md-container-ignore),
   md-input-container .md-placeholder {
-    -webkit-order: 1;
-        -ms-flex-order: 1;
-            order: 1;
+    -ms-flex-order: 1;
+        order: 1;
     pointer-events: none;
     -webkit-font-smoothing: antialiased;
     padding-left: 3px;
@@ -271,9 +270,8 @@ md-input-container {
   md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-text {
     color: transparent; }
   md-input-container .md-input {
-    -webkit-order: 2;
-        -ms-flex-order: 2;
-            order: 2;
+    -ms-flex-order: 2;
+        order: 2;
     display: block;
     margin-top: 0;
     background: none;
@@ -308,9 +306,8 @@ md-input-container {
       outline: none;
       box-shadow: none; }
     md-input-container .md-input.md-no-flex {
-      -webkit-flex: none !important;
-          -ms-flex: none !important;
-              flex: none !important; }
+      -ms-flex: none !important;
+          flex: none !important; }
   md-input-container .md-char-counter {
     text-align: right;
     padding-right: 2px;
@@ -354,9 +351,8 @@ md-input-container {
   md-input-container ng-messages, md-input-container data-ng-messages, md-input-container x-ng-messages,
   md-input-container [ng-messages], md-input-container [data-ng-messages], md-input-container [x-ng-messages] {
     position: relative;
-    -webkit-order: 4;
-        -ms-flex-order: 4;
-            order: 4;
+    -ms-flex-order: 4;
+        order: 4;
     overflow: hidden;
     clear: left; }
     html[dir=rtl] md-input-container ng-messages, html[dir=rtl] md-input-container data-ng-messages, html[dir=rtl] md-input-container x-ng-messages, html[dir=rtl]
