@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v1.0.1
+ * v1.0.2
  */
 /*
 *
@@ -264,7 +264,7 @@
 [layout-align],
 [layout-align="start stretch"] {
   -ms-flex-pack: start;
-      justify-content: start;
+      justify-content: flex-start;
   -ms-flex-line-pack: stretch;
       align-content: stretch;
   -ms-flex-align: stretch;
@@ -1169,7 +1169,7 @@
   [layout-align-xs],
   [layout-align-xs="start stretch"] {
     -ms-flex-pack: start;
-        justify-content: start;
+        justify-content: flex-start;
     -ms-flex-line-pack: stretch;
         align-content: stretch;
     -ms-flex-align: stretch;
@@ -1930,7 +1930,7 @@
   [layout-align-gt-xs],
   [layout-align-gt-xs="start stretch"] {
     -ms-flex-pack: start;
-        justify-content: start;
+        justify-content: flex-start;
     -ms-flex-line-pack: stretch;
         align-content: stretch;
     -ms-flex-align: stretch;
@@ -2695,7 +2695,7 @@
   [layout-align-sm],
   [layout-align-sm="start stretch"] {
     -ms-flex-pack: start;
-        justify-content: start;
+        justify-content: flex-start;
     -ms-flex-line-pack: stretch;
         align-content: stretch;
     -ms-flex-align: stretch;
@@ -3456,7 +3456,7 @@
   [layout-align-gt-sm],
   [layout-align-gt-sm="start stretch"] {
     -ms-flex-pack: start;
-        justify-content: start;
+        justify-content: flex-start;
     -ms-flex-line-pack: stretch;
         align-content: stretch;
     -ms-flex-align: stretch;
@@ -4221,7 +4221,7 @@
   [layout-align-md],
   [layout-align-md="start stretch"] {
     -ms-flex-pack: start;
-        justify-content: start;
+        justify-content: flex-start;
     -ms-flex-line-pack: stretch;
         align-content: stretch;
     -ms-flex-align: stretch;
@@ -4982,7 +4982,7 @@
   [layout-align-gt-md],
   [layout-align-gt-md="start stretch"] {
     -ms-flex-pack: start;
-        justify-content: start;
+        justify-content: flex-start;
     -ms-flex-line-pack: stretch;
         align-content: stretch;
     -ms-flex-align: stretch;
@@ -5747,7 +5747,7 @@
   [layout-align-lg],
   [layout-align-lg="start stretch"] {
     -ms-flex-pack: start;
-        justify-content: start;
+        justify-content: flex-start;
     -ms-flex-line-pack: stretch;
         align-content: stretch;
     -ms-flex-align: stretch;
@@ -6508,7 +6508,7 @@
   [layout-align-gt-lg],
   [layout-align-gt-lg="start stretch"] {
     -ms-flex-pack: start;
-        justify-content: start;
+        justify-content: flex-start;
     -ms-flex-line-pack: stretch;
         align-content: stretch;
     -ms-flex-align: stretch;
@@ -7267,7 +7267,7 @@
   [layout-align-xl],
   [layout-align-xl="start stretch"] {
     -ms-flex-pack: start;
-        justify-content: start;
+        justify-content: flex-start;
     -ms-flex-line-pack: stretch;
         align-content: stretch;
     -ms-flex-align: stretch;
