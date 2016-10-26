@@ -137,7 +137,6 @@ md-input-container.md-input-has-value .md-select-value > span:not(.md-select-ico
     display: block;
     -webkit-box-align: end;
     -webkit-align-items: flex-end;
-                -ms-grid-row-align: flex-end;
             align-items: flex-end;
     text-align: end;
     width: 24px;

@@ -19,7 +19,9 @@
     },
     "shim": {
       "angular-material": {
-        "deps": []
+        "deps": [
+          "./angular-material.css!"
+        ]
       }
     },
     "peerDependencies": {}

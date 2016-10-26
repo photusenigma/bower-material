@@ -71,6 +71,27 @@ md-autocomplete {
     height: auto; }
     md-autocomplete[md-floating-label] md-input-container {
       padding-bottom: 0px; }
+      md-autocomplete[md-floating-label] md-input-container .md-select-icon {
+        position: absolute;
+        display: block;
+        top: 12px;
+        right: 2px;
+        -webkit-transform: translate3d(0, 1px, 0);
+                transform: translate3d(0, 1px, 0);
+        font-size: .84rem;
+        opacity: .3; }
+        md-autocomplete[md-floating-label] md-input-container .md-select-icon:after {
+          display: block;
+          content: '\25BC';
+          position: relative;
+          top: 2px;
+          speak: none;
+          -webkit-transform: scaleY(0.6) scaleX(1);
+                  transform: scaleY(0.6) scaleX(1); }
+      md-autocomplete[md-floating-label] md-input-container.md-input-focused .md-select-icon {
+        -webkit-transform: scale(1);
+                transform: scale(1);
+        opacity: 1; }
     md-autocomplete[md-floating-label] md-autocomplete-wrap {
       height: auto; }
     md-autocomplete[md-floating-label] button {

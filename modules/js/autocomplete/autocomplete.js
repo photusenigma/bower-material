@@ -65,6 +65,9 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
   ctrl.isReadonly = null;
   ctrl.hasNotFound = false;
 
+  // Pix Added Variables
+  ctrl.initComplete = false;
+
   // Public Exported Methods
   ctrl.keydown                       = keydown;
   ctrl.blur                          = blur;
@@ -81,6 +84,9 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
   ctrl.loadingIsVisible              = loadingIsVisible;
   ctrl.positionDropdown              = positionDropdown;
 
+  // Pix Added Methods
+  ctrl.focusInputElement             = focusInputElement;
+
   return init();
 
   //-- initialization methods
@@ -89,9 +95,11 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * Initialize the controller, setup watchers, gather elements
    */
   function init () {
+    ctrl.initComplete = false;
     $mdUtil.initOptionalProperties($scope, $attrs, { searchText: '', selectedItem: null });
     $mdTheming($element);
     configureWatchers();
+    if ($scope.selectedItem) ctrl.previousSelectedItem = $scope.selectedItem;
     $mdUtil.nextTick(function () {
 
       gatherElements();
@@ -101,6 +109,8 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
       if ($scope.autofocus) {
         $element.on('focus', focusInputElement);
       }
+
+      ctrl.initComplete = true;
     });
   }
 
@@ -194,7 +204,7 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * Sends focus to the input element.
    */
   function focusInputElement () {
-    elements.input.focus();
+    if ($scope.autofocus || ($scope.revertOnBlur && ctrl.initComplete)) elements.input.focus();
   }
 
   /**
@@ -336,6 +346,7 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * When the mouse button is released, send focus back to the input field.
    */
   function onMouseup () {
+    ctrl.selectionByMouse = true;
     elements.input.focus();
   }
 
@@ -349,6 +360,7 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
     updateModelValidators();
 
     if (selectedItem) {
+      if(!ctrl.selectionByMouse) ctrl.previousSelectedItem = selectedItem;
       getDisplayValue(selectedItem).then(function (val) {
         $scope.searchText = val;
         handleSelectedItemChange(selectedItem, previousSelectedItem);
@@ -364,7 +376,16 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
       });
     }
 
-    if (selectedItem !== previousSelectedItem) announceItemChange();
+    if (shouldAnnounceChange(selectedItem)) announceItemChange(selectedItem);
+  }
+
+  function shouldAnnounceChange (selectedItem) {
+    var shouldAnnounce = !$scope.revertOnBlur || selectedItem;
+    return shouldAnnounce;
+  }
+
+  function announceFocusChange () {
+    angular.isFunction($scope.itemFocusChange) && $scope.itemFocusChange()($scope.itemHasFocus);
   }
 
   /**
@@ -450,9 +471,10 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * Handles input blur event, determines if the dropdown should hide.
    */
   function blur($event) {
-    hasFocus = false;
-
     if (!noBlur) {
+      hasFocus = false;
+      $scope.itemHasFocus = hasFocus;
+      announceFocusChange();
       ctrl.hidden = shouldHide();
       evalAttr('ngBlur', { $event: $event });
     }
@@ -475,6 +497,10 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    */
   function focus($event) {
     hasFocus = true;
+    $scope.itemHasFocus = hasFocus;
+    announceFocusChange();
+
+    if ($scope.clearOnFocus && !ctrl.selectionByMouse) $scope.searchText = '';
 
     if (isSearchable() && isMinLengthMet()) {
       handleQuery();
@@ -526,6 +552,8 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
         if (!shouldProcessEscape()) return;
         event.stopPropagation();
 
+        if (!$scope.revertOnBlur) clearValue();
+
         clearSelectedItem();
         if ($scope.searchText && hasEscapeOption('clear')) {
           clearSearchText();
@@ -551,7 +579,7 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * @returns {*}
    */
   function getMinLength () {
-    return angular.isNumber($scope.minLength) ? $scope.minLength : 1;
+    return angular.isNumber($scope.minLength) ? $scope.minLength : 0;
   }
 
   /**
@@ -618,8 +646,24 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
    * @returns {boolean}
    */
   function shouldHide () {
-    if (!isSearchable()) return true;    // Hide when not able to query
-    else return !shouldShow();            // Hide when the dropdown is not able to show.
+    var shouldHide = false;
+
+    if (!isSearchable()) shouldHide = true;    // Hide when not able to query
+    else shouldHide = !shouldShow();            // Hide when the dropdown is not able to show.
+
+    if (shouldHide && !hasFocus) shouldRevertSelectedDisplay();
+    return shouldHide;
+  }
+
+  function shouldRevertSelectedDisplay () {
+    if ($scope.revertOnBlur && !$scope.selectedItem) {
+      if (ctrl.previousSelectedItem) {
+        $scope.selectedItem = ctrl.previousSelectedItem || null;
+        selectedItemChange($scope.selectedItem);
+      } else {
+        $scope.searchText = '';
+      }
+    }
   }
 
   /**
@@ -729,6 +773,10 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $mdTheming,
         ngModel.$render();
       }).finally(function () {
         $scope.selectedItem = ctrl.matches[ index ];
+        if ($scope.selectedItem) {
+           ctrl.previousSelectedItem = $scope.selectedItem;
+           ctrl.selectionByMouse = false;
+        }
         setLoading(false);
       });
     }, false);
@@ -1116,9 +1164,23 @@ function MdAutocomplete ($$mdSvgRegistry) {
       autoselect:       '=?mdAutoselect',
       menuClass:        '@?mdMenuClass',
       inputId:          '@?mdInputId',
-      escapeOptions:    '@?mdEscapeOptions'
+      escapeOptions:    '@?mdEscapeOptions',
+
+      // PIX ADDED ITEMS
+      revertOnBlur:     '=?mdRevertOnBlur',
+      clearOnFocus:     '=?mdClearOnFocus',
+      itemHasFocus:     '=?mdItemHasFocus',
+      itemFocusChange:  '&?mdItemFocusChange',
+      actLikeSelect:    '&?mdActLikeSelect',
+      showItemTooltips: '&?mdShowItemTooltips',
+      itemDisplayProp:  '&?mdItemDisplayProp'
     },
     link: function(scope, element, attrs, controller) {
+      if (attrs.hasOwnProperty('mdActLikeSelect')) {
+          scope.revertOnBlur = true;
+          scope.clearOnFocus = true;
+      }
+
       // Retrieve the state of using a md-not-found template by using our attribute, which will
       // be added to the element in the template function.
       controller.hasNotFound = !!element.attr('md-has-not-found');
@@ -1159,7 +1221,7 @@ function MdAutocomplete ($$mdSvgRegistry) {
             <ul class="md-autocomplete-suggestions"\
                 ng-class="::menuClass"\
                 id="ul-{{$mdAutocompleteCtrl.id}}">\
-              <li md-virtual-repeat="item in $mdAutocompleteCtrl.matches"\
+              <li '+ getItemTooltip() +' md-virtual-repeat="item in $mdAutocompleteCtrl.matches"\
                   ng-class="{ selected: $index === $mdAutocompleteCtrl.index }"\
                   ng-click="$mdAutocompleteCtrl.select($index)"\
                   md-extra-name="$mdAutocompleteCtrl.itemName">\
@@ -1174,6 +1236,12 @@ function MdAutocomplete ($$mdSvgRegistry) {
             aria-live="assertive">\
           <p ng-repeat="message in $mdAutocompleteCtrl.messages track by $index" ng-if="message">{{message}}</p>\
         </aria-status>';
+
+      function getItemTooltip() {
+        var displayProp = attr.hasOwnProperty('mdItemDisplayProp') ? attr.mdItemDisplayProp : 'display';
+        var itemTag = "item['"+ displayProp +"']";
+        return attr.hasOwnProperty('mdShowItemTooltips') ? 'title="{{'+ itemTag +'}}"' : '';
+      }
 
       function getItemTemplate() {
         var templateTag = element.find('md-item-template').detach(),
@@ -1222,6 +1290,7 @@ function MdAutocomplete ($$mdSvgRegistry) {
                   aria-activedescendant=""\
                   aria-expanded="{{!$mdAutocompleteCtrl.hidden}}"/>\
               <div md-autocomplete-parent-scope md-autocomplete-replace>' + leftover + '</div>\
+              ' + (attr.hasOwnProperty('mdActLikeSelect') ? getSelectIcon() : '') + '\
             </md-input-container>';
         } else {
           return '\
@@ -1257,6 +1326,10 @@ function MdAutocomplete ($$mdSvgRegistry) {
             </button>\
                 ';
         }
+      }
+
+      function getSelectIcon() {
+        return '<span class="md-select-icon" aria-hidden="true" ng-click="$mdAutocompleteCtrl.focusInputElement()"></span>';
       }
     }
   };

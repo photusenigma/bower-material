@@ -54,7 +54,6 @@ md-fab-speed-dial {
   md-fab-speed-dial.md-is-open .md-fab-action-item {
     -webkit-box-align: center;
     -webkit-align-items: center;
-                -ms-grid-row-align: center;
             align-items: center; }
   md-fab-speed-dial md-fab-actions {
     display: -webkit-box;
